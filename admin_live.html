@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>다시봄 | 관리자 (라이브)</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--coral:#FF6B6B;--coral-dark:#E85555;--peach:#FFE5D9;--cream:#FFF8F3;--navy:#1F2A44;
+        --bg:#F4F5F8;--gray-1:#F7F7F9;--gray-2:#E9EAEE;--gray-3:#9AA0AE;--gray-4:#5A6172;
+        --green:#2ECC71;--gold:#F4B400;--blue:#4A6CF7;--red:#E53935;
+        --shadow:0 4px 18px rgba(31,42,68,.06);--radius:14px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{font-family:'Noto Sans KR',sans-serif;color:var(--navy);background:var(--bg);font-size:13.5px;}
+  a,button{cursor:pointer;}button{font-family:inherit;border:none;background:none;color:inherit;}
+  table{width:100%;border-collapse:collapse;}
+
+  .app{display:grid;grid-template-columns:230px 1fr;min-height:100vh;}
+  aside{background:#fff;border-right:1px solid var(--gray-2);padding:24px 14px;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  .brand{display:flex;align-items:center;gap:10px;padding:6px 10px 20px;margin-bottom:14px;border-bottom:1px solid var(--gray-2);}
+  .brand-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--coral),#FF9A8B);
+              color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;}
+  .brand-name{font-weight:900;font-size:16px;}
+  .brand-sub{font-size:10px;color:var(--gray-4);letter-spacing:1px;font-weight:700;}
+  .nav-h{font-size:10px;color:var(--gray-3);font-weight:700;letter-spacing:1.5px;padding:14px 12px 6px;}
+  .nav-link{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:9px;color:var(--gray-4);font-size:13px;font-weight:500;margin-bottom:2px;}
+  .nav-link:hover{background:var(--gray-1);color:var(--navy);}
+  .nav-link.on{background:var(--cream);color:var(--coral);font-weight:700;}
+  .nav-link .b{margin-left:auto;background:var(--coral);color:#fff;font-size:10px;padding:2px 7px;border-radius:100px;font-weight:700;}
+
+  main{padding:22px 28px 60px;min-width:0;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .topbar h1{font-size:22px;font-weight:900;}
+  .topbar .sub{font-size:12px;color:var(--gray-4);margin-top:2px;}
+  .top-actions{display:flex;gap:10px;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-weight:600;font-size:12px;padding:7px 13px;border:1px solid transparent;transition:.15s;}
+  .btn-primary{background:var(--coral);color:#fff;}.btn-primary:hover{background:var(--coral-dark);}
+  .btn-outline{background:#fff;color:var(--navy);border-color:var(--gray-2);}.btn-outline:hover{border-color:var(--navy);}
+  .btn-ghost{background:transparent;color:var(--gray-4);}.btn-ghost:hover{background:var(--gray-1);}
+  .btn-green{background:var(--green);color:#fff;}
+  .btn-red{background:var(--red);color:#fff;}
+
+  .page{display:none;}.page.on{display:block;}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+  .kpi{background:#fff;border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);}
+  .kpi .l{font-size:11px;color:var(--gray-4);margin-bottom:6px;}
+  .kpi .v{font-size:26px;font-weight:900;letter-spacing:-0.5px;}
+  .kpi .v.c{color:var(--coral);}.kpi .v.g{color:var(--green);}.kpi .v.r{color:var(--red);}
+  .kpi .s{font-size:11px;color:var(--gray-3);margin-top:4px;}
+
+  .panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:18px;}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;border-bottom:1px solid var(--gray-2);}
+  .panel-head h3{font-size:15px;font-weight:900;}
+  .panel-head .sub{font-size:11px;color:var(--gray-4);margin-top:2px;}
+  .filter-row{display:flex;gap:8px;padding:14px 22px;border-bottom:1px solid var(--gray-2);align-items:center;flex-wrap:wrap;}
+  .chip{padding:6px 12px;border-radius:7px;background:var(--gray-1);font-size:12px;color:var(--gray-4);font-weight:600;border:1.5px solid transparent;}
+  .chip.on{background:#FFE5E5;color:var(--coral);border-color:var(--coral);}
+
+  th{padding:11px 18px;text-align:left;font-size:10.5px;color:var(--gray-3);font-weight:700;letter-spacing:0.5px;background:var(--gray-1);border-bottom:1px solid var(--gray-2);text-transform:uppercase;}
+  td{padding:12px 18px;border-bottom:1px solid var(--gray-2);vertical-align:middle;font-size:13px;}
+  tr:last-child td{border:none;}
+  tr:hover{background:var(--gray-1);}
+
+  .pill{display:inline-block;padding:3px 9px;font-size:10.5px;font-weight:700;border-radius:100px;}
+  .p-yel{background:#FFF4D6;color:#D4A100;}.p-blu{background:#E5EBFF;color:var(--blue);}
+  .p-grn{background:#E0F2E9;color:var(--green);}.p-red{background:#FFE5E5;color:var(--red);}
+  .p-gry{background:var(--gray-1);color:var(--gray-4);}.p-coral{background:#FFE5E5;color:var(--coral);}
+
+  .ucell{display:flex;align-items:center;gap:10px;}
+  .uav{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#FF6B6B,#FF9A8B);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;flex-shrink:0;}
+  .ucell .nm{font-weight:700;font-size:13px;}.ucell .m{font-size:11px;color:var(--gray-4);margin-top:1px;}
+
+  .login-wrap{max-width:380px;margin:80px auto;}
+  .form-row{margin-bottom:14px;}
+  .form-row label{display:block;font-size:11px;color:var(--gray-4);font-weight:700;margin-bottom:5px;}
+  .form-row input{width:100%;padding:10px 12px;border:1px solid var(--gray-2);border-radius:8px;font-size:14px;}
+  .alert{padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:14px;display:none;}
+  .alert.err{background:#FFE5E5;color:var(--red);display:block;}
+  .alert.ok{background:#E0F2E9;color:var(--green);display:block;}
+  .empty{padding:40px 0;text-align:center;color:var(--gray-3);}
+
+  @media(max-width:768px){.app{grid-template-columns:1fr;}aside{position:static;height:auto;}.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+
+<div id="login-screen" style="display:none;">
+  <div class="login-wrap">
+    <div class="panel">
+      <div class="panel-head"><h3>관리자 로그인</h3></div>
+      <div style="padding:24px;">
+        <div class="alert" id="lg-alert"></div>
+        <div class="form-row"><label>이메일</label><input id="lg-email" type="email" value="admin@dasibom.kr"></div>
+        <div class="form-row"><label>비밀번호</label><input id="lg-pw" type="password" value="admin1234"></div>
+        <button class="btn btn-primary" style="width:100%;padding:11px;" onclick="doLogin()">로그인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="admin-app" class="app" style="display:none;">
+  <aside>
+    <div class="brand">
+      <div class="brand-mark">다</div>
+      <div><div class="brand-name">다시봄</div><div class="brand-sub">ADMIN LIVE</div></div>
+    </div>
+    <div class="nav-h">운영</div>
+    <a class="nav-link on" data-p="dashboard" onclick="go('dashboard')"><span>📊</span> 대시보드</a>
+    <div class="nav-h">관리</div>
+    <a class="nav-link" data-p="users" onclick="go('users')"><span>👥</span> 회원 관리</a>
+    <a class="nav-link" data-p="companies" onclick="go('companies')"><span>🏢</span> 기업 & W-Cert</a>
+    <a class="nav-link" data-p="jobs" onclick="go('jobs')"><span>💼</span> 공고 관리</a>
+    <a class="nav-link" data-p="apps" onclick="go('apps')"><span>📝</span> 지원 현황</a>
+    <a class="nav-link" data-p="reports" onclick="go('reports')"><span>🚨</span> 신고 관리</a>
+    <div style="margin-top:30px;padding:0 10px;">
+      <button class="btn btn-outline" style="width:100%;" onclick="doLogout()">로그아웃</button>
+    </div>
+  </aside>
+
+  <main>
+    <!-- DASHBOARD -->
+    <div id="page-dashboard" class="page on">
+      <div class="topbar">
+        <div><h1>대시보드</h1><div class="sub">실시간 DB 통계</div></div>
+        <div class="top-actions"><button class="btn btn-outline" onclick="loadStats()">새로고침</button></div>
+      </div>
+      <div class="kpi-grid" id="kpi-area"></div>
+      <div class="panel">
+        <div class="panel-head"><h3>처리 대기 항목</h3><div class="sub">관리자 액션이 필요한 작업</div></div>
+        <div id="pending-list"></div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div id="page-users" class="page">
+      <div class="topbar">
+        <div><h1>회원 관리</h1><div class="sub" id="u-sub">전체 회원</div></div>
+        <div class="top-actions"><button class="btn btn-outline" onclick="loadUsers()">새로고침</button></div>
+      </div>
+      <div class="panel">
+        <div class="filter-row" id="u-filter">
+          <button class="chip on" data-r="">전체</button>
+          <button class="chip" data-r="jobseeker">구직자</button>
+          <button class="chip" data-r="employer">기업</button>
+          <button class="chip" data-r="admin">관리자</button>
+        </div>
+        <table>
+          <thead><tr><th>회원</th><th>역할</th><th>지역</th><th>단절</th><th>완성도</th><th>상태</th><th>가입일</th><th></th></tr></thead>
+          <tbody id="u-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- COMPANIES -->
+    <div id="page-companies" class="page">
+      <div class="topbar">
+        <div><h1>기업 & W-Cert 심사</h1><div class="sub" id="c-sub">전체 기업</div></div>
+        <div class="top-actions"><button class="btn btn-outline" onclick="loadCompanies()">새로고침</button></div>
+      </div>
+      <div class="panel">
+        <div class="filter-row" id="c-filter">
+          <button class="chip on" data-w="">전체</button>
+          <button class="chip" data-w="applied">신청</button>
+          <button class="chip" data-w="under_review">심사중</button>
+          <button class="chip" data-w="approved">승인</button>
+          <button class="chip" data-w="rejected">반려</button>
+        </div>
+        <table>
+          <thead><tr><th>기업</th><th>업종</th><th>지역</th><th>여성/관리직/유연</th><th>점수</th><th>상태</th><th style="width:230px;">액션</th></tr></thead>
+          <tbody id="c-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- JOBS -->
+    <div id="page-jobs" class="page">
+      <div class="topbar">
+        <div><h1>공고 관리</h1><div class="sub" id="j-sub">전체 공고</div></div>
+        <div class="top-actions"><button class="btn btn-outline" onclick="loadJobs()">새로고침</button></div>
+      </div>
+      <div class="panel">
+        <div class="filter-row" id="j-filter">
+          <button class="chip on" data-s="all">전체</button>
+          <button class="chip" data-s="pending_review">검토대기</button>
+          <button class="chip" data-s="published">게시중</button>
+          <button class="chip" data-s="rejected">반려</button>
+          <button class="chip" data-s="closed">마감</button>
+        </div>
+        <table>
+          <thead><tr><th>공고</th><th>근무</th><th>지역</th><th>등록일</th><th>지원/조회</th><th>상태</th><th style="width:250px;">액션</th></tr></thead>
+          <tbody id="j-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- APPS -->
+    <div id="page-apps" class="page">
+      <div class="topbar">
+        <div><h1>지원 현황</h1><div class="sub">최근 100건</div></div>
+        <div class="top-actions"><button class="btn btn-outline" onclick="loadApps()">새로고침</button></div>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>지원자</th><th>공고</th><th>회사</th><th>AI 점수</th><th>지원일</th><th>상태 변경</th></tr></thead>
+          <tbody id="a-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div id="page-reports" class="page">
+      <div class="topbar">
+        <div><h1>신고 관리</h1><div class="sub" id="r-sub">전체 신고</div></div>
+        <div class="top-actions"><button class="btn btn-outline" onclick="loadReports()">새로고침</button></div>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>대상</th><th>사유</th><th>상세</th><th>접수일</th><th>상태</th><th style="width:200px;">액션</th></tr></thead>
+          <tbody id="r-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+let me=null, allUsers=[], allCompanies=[], allJobs=[], allReports=[];
+const $ = s=>document.querySelector(s);
+const $$ = s=>document.querySelectorAll(s);
+async function api(p, o={}){
+  const r = await fetch(p, {credentials:'include', headers:{'Content-Type':'application/json'}, ...o});
+  const data = r.status===204?null:await r.json();
+  if(!r.ok) throw new Error(data.detail||'API 오류'); return data;
+}
+
+function go(p){
+  $$('.page').forEach(el=>el.classList.remove('on'));
+  $('#page-'+p).classList.add('on');
+  $$('.nav-link').forEach(el=>el.classList.toggle('on', el.dataset.p===p));
+  ({dashboard:loadStats, users:loadUsers, companies:loadCompanies, jobs:loadJobs, apps:loadApps, reports:loadReports})[p]?.();
+}
+
+async function refreshMe(){
+  try{
+    const r = await api('/api/auth/me');
+    me = (r.authenticated && r.role==='admin') ? r : null;
+  }catch{ me=null; }
+  $('#login-screen').style.display = me?'none':'block';
+  $('#admin-app').style.display = me?'grid':'none';
+  if(me) loadStats();
+}
+async function doLogin(){
+  try{
+    await api('/api/auth/login', {method:'POST', body:JSON.stringify({email:$('#lg-email').value, password:$('#lg-pw').value})});
+    await refreshMe();
+    if(!me){ $('#lg-alert').className='alert err'; $('#lg-alert').textContent='관리자 권한이 없습니다.'; }
+  }catch(e){ $('#lg-alert').className='alert err'; $('#lg-alert').textContent=e.message; }
+}
+async function doLogout(){ await api('/api/auth/logout',{method:'POST'}); await refreshMe(); }
+
+// ===== DASHBOARD =====
+async function loadStats(){
+  const s = await api('/api/admin/stats');
+  $('#kpi-area').innerHTML = `
+    <div class="kpi"><div class="l">구직자</div><div class="v c">${s.jobseekers.toLocaleString()}</div><div class="s">누적 가입자</div></div>
+    <div class="kpi"><div class="l">기업</div><div class="v">${s.companies.toLocaleString()}</div><div class="s">W-Cert 승인 ${s.wcert_approved}개</div></div>
+    <div class="kpi"><div class="l">게시 공고</div><div class="v">${s.jobs_published.toLocaleString()}</div><div class="s">검토대기 ${s.jobs_pending}건</div></div>
+    <div class="kpi"><div class="l">총 지원</div><div class="v g">${s.applications.toLocaleString()}</div><div class="s">최종합격 ${s.final_passed}건</div></div>
+  `;
+  // pending
+  const [jobs, companies, reports] = await Promise.all([
+    api('/api/admin/jobs?status=pending_review'),
+    api('/api/companies?wcert=under_review').catch(()=>[]),
+    api('/api/admin/reports').catch(()=>[]),
+  ]);
+  const items = [];
+  jobs.slice(0,5).forEach(j=>items.push({t:'공고 검토',c:`${j.company_name} · ${j.title}`,p:'p-yel',btn:`<button class="btn btn-green" onclick="approveJob('${j.job_id}')">승인</button> <button class="btn btn-red" onclick="rejectJob('${j.job_id}')">반려</button>`}));
+  companies.slice(0,5).forEach(c=>items.push({t:'W-Cert 심사',c:`${c.name} · 점수 ${c.wcert_score||'-'}`,p:'p-coral',btn:`<button class="btn btn-green" onclick="setWcert('${c.company_id}','approved')">승인</button> <button class="btn btn-red" onclick="setWcert('${c.company_id}','rejected')">반려</button>`}));
+  reports.filter(r=>r.status==='received').slice(0,5).forEach(r=>items.push({t:'신고 처리',c:`${r.target_type} #${r.target_id} · ${r.reason_code}`,p:'p-red',btn:`<button class="btn btn-outline" onclick="setReport(${r.report_id},'resolved')">해결</button>`}));
+  const el = $('#pending-list');
+  el.innerHTML = items.length ? '<table><tbody>'+items.map(i=>`<tr><td style="width:120px;"><span class="pill ${i.p}">${i.t}</span></td><td>${i.c}</td><td style="text-align:right;width:200px;">${i.btn}</td></tr>`).join('')+'</tbody></table>' : '<div class="empty">처리할 항목이 없습니다 🎉</div>';
+}
+
+// ===== USERS =====
+async function loadUsers(){
+  allUsers = await api('/api/admin/users');
+  filterUsers();
+}
+function filterUsers(){
+  const r = $('#u-filter .chip.on').dataset.r;
+  const list = r ? allUsers.filter(u=>u.role===r) : allUsers;
+  $('#u-sub').textContent = `${list.length}명`;
+  $('#u-body').innerHTML = list.map(u=>{
+    const sk = {active:'p-grn',dormant:'p-yel',suspended:'p-red',withdrawn:'p-gry'}[u.status]||'p-gry';
+    return `<tr>
+      <td><div class="ucell"><div class="uav">${(u.name||u.email)[0]}</div><div><div class="nm">${esc(u.name||'-')}</div><div class="m">${esc(u.email)}</div></div></div></td>
+      <td><span class="pill p-blu">${roleKo(u.role)}</span></td>
+      <td>${esc(u.region_sido||'-')} ${esc(u.region_sigungu||'')}</td>
+      <td>${u.career_gap_months?Math.floor(u.career_gap_months/12)+'년':'-'}</td>
+      <td>${u.profile_complete_pct||0}%</td>
+      <td><span class="pill ${sk}">${statusKo(u.status)}</span></td>
+      <td>${(u.created_at||'').slice(0,10)}</td>
+      <td>
+        ${u.status==='active'?`<button class="btn btn-outline" onclick="setUser('${u.user_id}','suspended')">정지</button>`:`<button class="btn btn-outline" onclick="setUser('${u.user_id}','active')">활성</button>`}
+        <button class="btn btn-outline" onclick="delUser('${u.user_id}')">삭제</button>
+      </td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8" class="empty">결과 없음</td></tr>';
+}
+async function setUser(uid, s){ await api('/api/admin/users/'+uid+'/status',{method:'PATCH',body:JSON.stringify({status:s})}); loadUsers(); }
+async function delUser(uid){ if(!confirm('정말 삭제할까요?'))return; await api('/api/admin/users/'+uid,{method:'DELETE'}); loadUsers(); }
+
+// ===== COMPANIES =====
+async function loadCompanies(){
+  allCompanies = await api('/api/companies');
+  filterCompanies();
+}
+function filterCompanies(){
+  const w = $('#c-filter .chip.on').dataset.w;
+  const list = w ? allCompanies.filter(c=>c.wcert_status===w) : allCompanies;
+  $('#c-sub').textContent = `${list.length}개 기업`;
+  $('#c-body').innerHTML = list.map(c=>{
+    const sk = {approved:'p-coral',under_review:'p-yel',applied:'p-yel',rejected:'p-red',revoked:'p-red'}[c.wcert_status]||'p-gry';
+    const sn = {approved:'⭐ 인증',under_review:'심사중',applied:'신청',rejected:'반려',revoked:'취소'}[c.wcert_status]||c.wcert_status;
+    return `<tr>
+      <td><div class="ucell"><div class="uav">${c.logo_initial||c.name[0]}</div><div><div class="nm">${esc(c.name)}</div><div class="m">${c.business_no}</div></div></div></td>
+      <td>${esc(c.industry||'-')}</td>
+      <td>${esc(c.region_sido||'-')} ${esc(c.region_sigungu||'')}</td>
+      <td>${pct(c.female_ratio)} / ${pct(c.female_mgr_ratio)} / ${pct(c.flex_usage_ratio)}</td>
+      <td>${c.wcert_score?c.wcert_score.toFixed(1):'-'}</td>
+      <td><span class="pill ${sk}">${sn}</span></td>
+      <td>
+        <button class="btn btn-green" onclick="setWcert('${c.company_id}','approved')">승인</button>
+        <button class="btn btn-red" onclick="setWcert('${c.company_id}','rejected')">반려</button>
+        <button class="btn btn-outline" onclick="delCompany('${c.company_id}')">삭제</button>
+      </td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7" class="empty">없음</td></tr>';
+}
+async function setWcert(cid, s){ await api('/api/companies/'+cid+'/wcert',{method:'PATCH',body:JSON.stringify({status:s})}); loadCompanies(); loadStats(); }
+async function delCompany(cid){ if(!confirm('기업과 모든 공고가 삭제됩니다. 진행할까요?'))return; await api('/api/companies/'+cid,{method:'DELETE'}); loadCompanies(); }
+
+// ===== JOBS =====
+async function loadJobs(){
+  const s = $('#j-filter .chip.on').dataset.s;
+  allJobs = await api('/api/admin/jobs?status='+s);
+  $('#j-sub').textContent = `${allJobs.length}개 공고`;
+  $('#j-body').innerHTML = allJobs.map(j=>{
+    const sk = {published:'p-grn',pending_review:'p-yel',rejected:'p-red',closed:'p-gry',draft:'p-gry'}[j.status]||'p-gry';
+    const sn = {published:'게시중',pending_review:'검토대기',rejected:'반려',closed:'마감',draft:'임시'}[j.status]||j.status;
+    const wt = j.work_types.map(t=>({part_time:'시간제',flex:'자율',remote:'재택',hybrid:'하이브리드',full_time:'풀타임'}[t]||t)).join(', ');
+    return `<tr>
+      <td><div class="ucell"><div class="uav">${j.logo_initial||j.company_name[0]}</div><div><div class="nm">${esc(j.title)}</div><div class="m">${esc(j.company_name)}</div></div></div></td>
+      <td>${wt}</td>
+      <td>${esc(j.region_sido||'-')}</td>
+      <td>${(j.created_at||'').slice(0,10)}</td>
+      <td>${j.apply_count}/${j.view_count}</td>
+      <td><span class="pill ${sk}">${sn}</span></td>
+      <td>
+        ${j.status!=='published'?'<button class="btn btn-green" onclick="approveJob(\''+j.job_id+'\')">승인</button>':''}
+        ${j.status!=='rejected'?'<button class="btn btn-red" onclick="rejectJob(\''+j.job_id+'\')">반려</button>':''}
+        ${j.status!=='closed'?'<button class="btn btn-outline" onclick="closeJob(\''+j.job_id+'\')">마감</button>':''}
+      </td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7" class="empty">없음</td></tr>';
+}
+async function setJob(id,s){ await api('/api/admin/jobs/'+id+'/status',{method:'PATCH',body:JSON.stringify({status:s})}); loadJobs(); loadStats(); }
+const approveJob = id=>setJob(id,'published');
+const rejectJob = id=>setJob(id,'rejected');
+const closeJob = id=>setJob(id,'closed');
+
+// ===== APPS =====
+async function loadApps(){
+  const apps = await api('/api/admin/applications');
+  $('#a-body').innerHTML = apps.map(a=>{
+    const opts = ['submitted','screening','document_passed','interview_scheduled','final_passed','rejected']
+      .map(s=>`<option value="${s}" ${a.status===s?'selected':''}>${statusApKo(s)}</option>`).join('');
+    return `<tr>
+      <td><div class="ucell"><div class="uav">${(a.applicant_name||a.email)[0]}</div><div><div class="nm">${esc(a.applicant_name||'-')}</div><div class="m">${esc(a.email)}</div></div></div></td>
+      <td>${esc(a.title)}</td>
+      <td>${esc(a.company_name)}</td>
+      <td><b style="color:var(--coral);">${a.ai_match_score||'-'}점</b></td>
+      <td>${(a.applied_at||'').slice(0,10)}</td>
+      <td><select onchange="setAppStatus('${a.application_id}',this.value)" style="padding:5px 10px;border:1px solid var(--gray-2);border-radius:6px;font-size:12px;">${opts}</select></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" class="empty">없음</td></tr>';
+}
+async function setAppStatus(aid,s){ await api('/api/applications/'+aid+'/status',{method:'PATCH',body:JSON.stringify({status:s})}); }
+
+// ===== REPORTS =====
+async function loadReports(){
+  allReports = await api('/api/admin/reports');
+  $('#r-sub').textContent = `${allReports.length}건`;
+  $('#r-body').innerHTML = allReports.map(r=>{
+    const sk = {received:'p-red',investigating:'p-yel',resolved:'p-grn',rejected:'p-gry'}[r.status]||'p-gry';
+    return `<tr>
+      <td><b>${r.target_type}</b><br><span style="font-size:11px;color:var(--gray-4);">#${esc(r.target_id)}</span></td>
+      <td>${esc(r.reason_code)}</td>
+      <td>${esc(r.detail||'-')}</td>
+      <td>${(r.created_at||'').slice(0,10)}</td>
+      <td><span class="pill ${sk}">${r.status}</span></td>
+      <td>
+        <button class="btn btn-green" onclick="setReport(${r.report_id},'resolved')">해결</button>
+        <button class="btn btn-outline" onclick="setReport(${r.report_id},'rejected')">반려</button>
+      </td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" class="empty">신고 없음 🎉</td></tr>';
+}
+async function setReport(id,s){ await api('/api/admin/reports/'+id+'/status',{method:'PATCH',body:JSON.stringify({status:s})}); loadReports(); loadStats(); }
+
+// chip filter binders
+document.addEventListener('click', e=>{
+  if(e.target.classList.contains('chip')){
+    const par = e.target.parentNode;
+    par.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+    e.target.classList.add('on');
+    if(par.id==='u-filter') filterUsers();
+    if(par.id==='c-filter') filterCompanies();
+    if(par.id==='j-filter') loadJobs();
+  }
+});
+
+function roleKo(r){return {jobseeker:'구직자',employer:'기업',admin:'관리자',mentor:'멘토'}[r]||r;}
+function statusKo(s){return {active:'활성',dormant:'휴면',suspended:'정지',withdrawn:'탈퇴'}[s]||s;}
+function statusApKo(s){return {submitted:'지원',screening:'검토중',document_passed:'서류합격',interview_scheduled:'면접',final_passed:'최종합격',rejected:'불합격'}[s]||s;}
+function pct(v){return v==null?'-':(v*100).toFixed(0)+'%';}
+function esc(s){return String(s||'').replace(/[<>"']/g,c=>({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+refreshMe();
+</script>
+</body>
+</html>

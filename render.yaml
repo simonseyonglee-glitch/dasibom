@@ -1,0 +1,20 @@
+# Render.com Blueprint — 다시봄 자동 배포 설정
+# 사용법: GitHub에 푸시 → Render에서 "New +" → "Blueprint" → 해당 저장소 선택
+services:
+  - type: web
+    name: dasibom
+    runtime: python
+    plan: free            # 무료 플랜
+    region: singapore     # 한국과 가까운 리전
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn server:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DASIBOM_DB
+        value: /var/data/dasibom.db   # 영구 디스크 경로
+    disk:                              # 데이터 영구 보존용 디스크
+      name: dasibom-data
+      mountPath: /var/data
+      sizeGB: 1
+    healthCheckPath: /docs

@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>다시봄 | 관리자 콘솔</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#FF6B6B;
+    --coral-dark:#E85555;
+    --peach:#FFE5D9;
+    --cream:#FFF8F3;
+    --navy:#1F2A44;
+    --bg:#F4F5F8;
+    --panel:#FFFFFF;
+    --gray-1:#F7F7F9;
+    --gray-2:#E9EAEE;
+    --gray-3:#9AA0AE;
+    --gray-4:#5A6172;
+    --green:#2ECC71;
+    --gold:#F4B400;
+    --blue:#4A6CF7;
+    --red:#E53935;
+    --shadow:0 4px 18px rgba(31,42,68,0.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{font-family:'Noto Sans KR',sans-serif;color:var(--navy);background:var(--bg);font-size:14px;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;cursor:pointer;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+  table{width:100%;border-collapse:collapse;}
+
+  /* ============ LAYOUT ============ */
+  .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+
+  /* SIDEBAR */
+  aside.sidebar{
+    background:#fff;border-right:1px solid var(--gray-2);
+    padding:24px 16px;position:sticky;top:0;height:100vh;overflow-y:auto;
+  }
+  .brand{display:flex;align-items:center;gap:10px;padding:6px 10px 24px;margin-bottom:14px;border-bottom:1px solid var(--gray-2);}
+  .brand-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--coral),#FF9A8B);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;}
+  .brand-name{font-weight:900;font-size:17px;letter-spacing:-0.5px;line-height:1.2;}
+  .brand-sub{font-size:11px;color:var(--gray-4);font-weight:600;letter-spacing:0.5px;}
+  .nav-section{font-size:11px;color:var(--gray-3);font-weight:700;letter-spacing:1.5px;padding:14px 12px 6px;}
+  .nav-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--gray-4);font-size:13.5px;font-weight:500;margin-bottom:2px;cursor:pointer;}
+  .nav-link:hover{background:var(--gray-1);color:var(--navy);}
+  .nav-link.active{background:var(--cream);color:var(--coral);font-weight:700;}
+  .nav-link .ico{width:18px;text-align:center;}
+  .nav-link .badge{margin-left:auto;background:var(--coral);color:#fff;font-size:10px;padding:2px 7px;border-radius:100px;font-weight:700;}
+
+  .sidebar-foot{position:absolute;bottom:20px;left:16px;right:16px;padding:12px;border-radius:10px;background:var(--gray-1);display:flex;align-items:center;gap:10px;font-size:12px;}
+  .me-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--coral),#FF9A8B);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;}
+
+  /* MAIN */
+  main{padding:24px 32px 48px;min-width:0;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+  .topbar h1{font-size:22px;font-weight:900;letter-spacing:-0.5px;}
+  .topbar .sub{font-size:13px;color:var(--gray-4);margin-top:2px;}
+  .top-actions{display:flex;gap:10px;align-items:center;}
+  .search-bar{display:flex;align-items:center;background:#fff;border:1px solid var(--gray-2);padding:8px 14px;border-radius:10px;gap:8px;width:280px;}
+  .search-bar input{border:none;outline:none;flex:1;font-size:13px;font-family:inherit;background:transparent;}
+  .icon-btn{width:38px;height:38px;border-radius:10px;background:#fff;border:1px solid var(--gray-2);display:flex;align-items:center;justify-content:center;font-size:14px;position:relative;}
+  .icon-btn .red-dot{position:absolute;top:8px;right:8px;width:7px;height:7px;background:var(--coral);border-radius:50%;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:8px;font-weight:600;font-size:13px;padding:9px 16px;border:1px solid transparent;transition:.15s;}
+  .btn-primary{background:var(--coral);color:#fff;}
+  .btn-primary:hover{background:var(--coral-dark);}
+  .btn-outline{background:#fff;color:var(--navy);border-color:var(--gray-2);}
+  .btn-outline:hover{border-color:var(--navy);}
+  .btn-ghost{background:transparent;color:var(--gray-4);}
+  .btn-ghost:hover{background:var(--gray-1);}
+  .btn-sm{padding:6px 12px;font-size:12px;}
+  .btn-green{background:var(--green);color:#fff;}
+  .btn-red{background:var(--red);color:#fff;}
+
+  /* ============ PANELS ============ */
+  .page{display:none;animation:fadeIn .25s ease;}
+  .page.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  /* KPI CARDS */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+  .kpi-card{background:#fff;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+  .kpi-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+  .kpi-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+  .ki-1{background:#FFE5D9;color:var(--coral);}
+  .ki-2{background:#E5EBFF;color:var(--blue);}
+  .ki-3{background:#E0F2E9;color:var(--green);}
+  .ki-4{background:#FFF4D6;color:#D4A100;}
+  .kpi-trend{font-size:11px;font-weight:700;padding:3px 8px;border-radius:100px;}
+  .tr-up{background:#E0F2E9;color:var(--green);}
+  .tr-down{background:#FFE5E5;color:var(--red);}
+  .kpi-label{font-size:12px;color:var(--gray-4);margin-bottom:4px;}
+  .kpi-value{font-size:26px;font-weight:900;letter-spacing:-0.5px;}
+  .kpi-sub{font-size:11px;color:var(--gray-3);margin-top:6px;}
+
+  /* PANEL */
+  .panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:20px;}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--gray-2);}
+  .panel-head h3{font-size:16px;font-weight:900;}
+  .panel-head .sub{font-size:12px;color:var(--gray-4);margin-top:2px;}
+  .panel-body{padding:22px;}
+  .panel-body.flush{padding:0;}
+
+  .two-col{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
+
+  /* CHART (svg / pure css) */
+  .chart-area{padding:8px 0;}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--gray-4);margin-bottom:12px;}
+  .legend .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
+
+  /* Funnel */
+  .funnel{display:grid;gap:10px;padding:8px 0;}
+  .funnel-row{display:flex;align-items:center;gap:12px;}
+  .funnel-row .lbl{width:80px;font-size:12px;color:var(--gray-4);font-weight:600;}
+  .funnel-row .barwrap{flex:1;height:30px;background:var(--gray-1);border-radius:8px;overflow:hidden;}
+  .funnel-row .bar{height:100%;background:linear-gradient(90deg,var(--coral),#FF9A8B);display:flex;align-items:center;padding:0 10px;color:#fff;font-size:12px;font-weight:700;border-radius:8px;}
+  .funnel-row .val{width:80px;text-align:right;font-weight:800;font-size:13px;}
+
+  /* TABLE */
+  .tbl{font-size:13px;}
+  .tbl th{padding:12px 18px;text-align:left;font-size:11px;color:var(--gray-3);font-weight:700;letter-spacing:0.5px;text-transform:uppercase;background:var(--gray-1);border-bottom:1px solid var(--gray-2);}
+  .tbl td{padding:14px 18px;border-bottom:1px solid var(--gray-2);vertical-align:middle;}
+  .tbl tr:hover{background:var(--gray-1);}
+  .tbl tr:last-child td{border-bottom:none;}
+
+  /* Status pills */
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;font-size:11px;font-weight:700;border-radius:100px;}
+  .pill-yellow{background:#FFF4D6;color:#D4A100;}
+  .pill-blue  {background:#E5EBFF;color:var(--blue);}
+  .pill-green {background:#E0F2E9;color:var(--green);}
+  .pill-red   {background:#FFE5E5;color:var(--red);}
+  .pill-gray  {background:var(--gray-1);color:var(--gray-4);}
+  .pill-coral {background:#FFE5E5;color:var(--coral);}
+
+  /* Avatar / logo cell */
+  .ucell{display:flex;align-items:center;gap:10px;}
+  .uav{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:12px;flex-shrink:0;}
+  .uc1{background:linear-gradient(135deg,#FF6B6B,#FF9A8B);}
+  .uc2{background:linear-gradient(135deg,#4A6CF7,#6CB7FF);}
+  .uc3{background:linear-gradient(135deg,#2ECC71,#7FE2A8);}
+  .uc4{background:linear-gradient(135deg,#F4B400,#FFD86B);}
+  .ucell .nm{font-weight:700;font-size:13px;}
+  .ucell .meta{font-size:11px;color:var(--gray-4);margin-top:1px;}
+
+  /* TABS */
+  .tabs{display:flex;gap:4px;padding:0 22px;border-bottom:1px solid var(--gray-2);}
+  .tab{padding:14px 16px;font-size:13px;color:var(--gray-4);font-weight:600;border-bottom:2px solid transparent;cursor:pointer;}
+  .tab.active{color:var(--coral);border-color:var(--coral);font-weight:800;}
+
+  /* Filter row */
+  .filter-row{display:flex;gap:10px;padding:16px 22px;border-bottom:1px solid var(--gray-2);align-items:center;flex-wrap:wrap;}
+  .filter-row .left{display:flex;gap:8px;flex-wrap:wrap;}
+  .filter-row .right{margin-left:auto;display:flex;gap:8px;}
+  .chip{padding:6px 12px;border-radius:8px;background:var(--gray-1);font-size:12px;color:var(--gray-4);font-weight:600;border:1.5px solid transparent;cursor:pointer;}
+  .chip.on{background:#FFE5E5;color:var(--coral);border-color:var(--coral);}
+  .sel{padding:7px 12px;border:1px solid var(--gray-2);border-radius:8px;font-size:12px;background:#fff;font-family:inherit;}
+
+  /* W-CERT review card */
+  .wc-card{padding:20px;border-bottom:1px solid var(--gray-2);}
+  .wc-card:last-child{border:none;}
+  .wc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px;}
+  .wc-logo{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:16px;}
+  .wc-meta{flex:1;}
+  .wc-meta h4{font-size:16px;font-weight:900;margin-bottom:4px;}
+  .wc-meta .info{font-size:12px;color:var(--gray-4);}
+  .wc-criteria{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px;}
+  .wc-crit{background:var(--gray-1);border-radius:8px;padding:10px;text-align:center;}
+  .wc-crit .l{font-size:10px;color:var(--gray-4);font-weight:600;margin-bottom:4px;}
+  .wc-crit .v{font-weight:900;font-size:14px;}
+  .wc-crit.pass .v{color:var(--green);}
+  .wc-crit.fail .v{color:var(--red);}
+  .wc-actions{display:flex;gap:8px;justify-content:flex-end;}
+
+  /* report card */
+  .rep-card{padding:18px 22px;border-bottom:1px solid var(--gray-2);display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:flex-start;}
+  .rep-card:last-child{border:none;}
+  .rep-icon{width:38px;height:38px;border-radius:10px;background:#FFE5E5;color:var(--coral);display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .rep-body .t{font-weight:800;font-size:14px;margin-bottom:4px;}
+  .rep-body .m{font-size:12px;color:var(--gray-4);}
+  .rep-body .d{font-size:13px;color:var(--gray-4);margin-top:6px;line-height:1.6;}
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px){
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .two-col{grid-template-columns:1fr;}
+    .wc-criteria{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (max-width: 768px){
+    .app{grid-template-columns:1fr;}
+    aside.sidebar{position:static;height:auto;}
+    .sidebar-foot{display:none;}
+    main{padding:18px;}
+    .search-bar{width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- =================== SIDEBAR =================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">다</div>
+      <div>
+        <div class="brand-name">다시봄</div>
+        <div class="brand-sub">ADMIN CONSOLE</div>
+      </div>
+    </div>
+
+    <div class="nav-section">운영</div>
+    <a class="nav-link active" data-page="dashboard" onclick="go('dashboard')"><span class="ico">📊</span> 대시보드</a>
+
+    <div class="nav-section">회원</div>
+    <a class="nav-link" data-page="users" onclick="go('users')"><span class="ico">👥</span> 구직자 관리 <span class="badge">12,847</span></a>
+
+    <div class="nav-section">기업</div>
+    <a class="nav-link" data-page="companies" onclick="go('companies')"><span class="ico">🏢</span> 기업 관리</a>
+    <a class="nav-link" data-page="wcert" onclick="go('wcert')"><span class="ico">⭐</span> W-Cert 심사 <span class="badge">14</span></a>
+
+    <div class="nav-section">콘텐츠</div>
+    <a class="nav-link" data-page="jobs" onclick="go('jobs')"><span class="ico">💼</span> 공고 관리 <span class="badge">23</span></a>
+    <a class="nav-link" data-page="reports" onclick="go('reports')"><span class="ico">🚨</span> 신고 관리 <span class="badge">8</span></a>
+
+    <div class="sidebar-foot">
+      <div class="me-avatar">A</div>
+      <div>
+        <div style="font-weight:700;font-size:12px;">관리자 (admin)</div>
+        <div style="font-size:11px;color:var(--gray-4);">super admin</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =================== MAIN =================== -->
+  <main>
+
+    <!-- ============ DASHBOARD ============ -->
+    <div id="page-dashboard" class="page active">
+      <div class="topbar">
+        <div>
+          <h1>대시보드</h1>
+          <div class="sub">2026년 5월 19일 · 실시간 KPI</div>
+        </div>
+        <div class="top-actions">
+          <div class="search-bar"><span>🔍</span><input placeholder="회원/기업/공고 통합 검색"></div>
+          <button class="icon-btn">🔔<span class="red-dot"></span></button>
+          <button class="btn btn-outline">기간: 최근 30일 ▾</button>
+          <button class="btn btn-primary">CSV 내보내기</button>
+        </div>
+      </div>
+
+      <!-- KPI -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-head">
+            <div class="kpi-icon ki-1">👥</div>
+            <span class="kpi-trend tr-up">▲ 8.2%</span>
+          </div>
+          <div class="kpi-label">총 구직자 (누적)</div>
+          <div class="kpi-value">12,847</div>
+          <div class="kpi-sub">이번 달 신규 +428명</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-head">
+            <div class="kpi-icon ki-2">💼</div>
+            <span class="kpi-trend tr-up">▲ 12.4%</span>
+          </div>
+          <div class="kpi-label">활성 공고</div>
+          <div class="kpi-value">428</div>
+          <div class="kpi-sub">신규 등록 47건 / 마감 11건</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-head">
+            <div class="kpi-icon ki-3">🎯</div>
+            <span class="kpi-trend tr-up">▲ 4.1%</span>
+          </div>
+          <div class="kpi-label">매칭 성사율 (M2M)</div>
+          <div class="kpi-value">73%</div>
+          <div class="kpi-sub">3개월 내 합격 비율</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-head">
+            <div class="kpi-icon ki-4">⭐</div>
+            <span class="kpi-trend tr-down">▼ 1.8%</span>
+          </div>
+          <div class="kpi-label">W-Cert 인증기업</div>
+          <div class="kpi-value">428</div>
+          <div class="kpi-sub">대기 14 / 거절 6</div>
+        </div>
+      </div>
+
+      <!-- 두 컬럼: 차트 + 상태 -->
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>가입 & 지원 추이 (30일)</h3>
+              <div class="sub">일별 신규 가입자와 지원 건수</div>
+            </div>
+            <div>
+              <button class="chip on">30일</button>
+              <button class="chip">90일</button>
+              <button class="chip">12개월</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="legend">
+              <span><span class="dot" style="background:var(--coral);"></span>신규 가입</span>
+              <span><span class="dot" style="background:var(--blue);"></span>공고 지원</span>
+            </div>
+            <div class="chart-area">
+              <svg viewBox="0 0 720 220" width="100%" preserveAspectRatio="none" style="display:block;">
+                <!-- gridlines -->
+                <g stroke="#E9EAEE" stroke-dasharray="4 4">
+                  <line x1="0" y1="40"  x2="720" y2="40"/>
+                  <line x1="0" y1="90"  x2="720" y2="90"/>
+                  <line x1="0" y1="140" x2="720" y2="140"/>
+                  <line x1="0" y1="190" x2="720" y2="190"/>
+                </g>
+                <!-- area: signups -->
+                <path d="M0,170 L30,160 L60,150 L90,158 L120,135 L150,120 L180,128 L210,108 L240,95 L270,110 L300,80 L330,72 L360,90 L390,65 L420,52 L450,75 L480,40 L510,55 L540,38 L570,28 L600,52 L630,30 L660,18 L690,25 L720,15 L720,200 L0,200 Z"
+                      fill="url(#g1)" opacity="0.6"/>
+                <path d="M0,170 L30,160 L60,150 L90,158 L120,135 L150,120 L180,128 L210,108 L240,95 L270,110 L300,80 L330,72 L360,90 L390,65 L420,52 L450,75 L480,40 L510,55 L540,38 L570,28 L600,52 L630,30 L660,18 L690,25 L720,15"
+                      stroke="#FF6B6B" stroke-width="2.5" fill="none"/>
+                <!-- applications -->
+                <path d="M0,180 L30,175 L60,168 L90,160 L120,165 L150,148 L180,140 L210,132 L240,128 L270,120 L300,110 L330,118 L360,100 L390,92 L420,98 L450,80 L480,75 L510,70 L540,65 L570,55 L600,68 L630,50 L660,42 L690,38 L720,32"
+                      stroke="#4A6CF7" stroke-width="2.5" fill="none" stroke-dasharray="0"/>
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="#FF6B6B" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#FF6B6B" stop-opacity="0.0"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray-3);padding-top:6px;">
+                <span>04.19</span><span>04.26</span><span>05.03</span><span>05.10</span><span>05.19</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>지원 → 합격 퍼널</h3>
+              <div class="sub">최근 30일 누적</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="funnel">
+              <div class="funnel-row">
+                <span class="lbl">지원</span>
+                <div class="barwrap"><div class="bar" style="width:100%;">100%</div></div>
+                <span class="val">3,847</span>
+              </div>
+              <div class="funnel-row">
+                <span class="lbl">서류통과</span>
+                <div class="barwrap"><div class="bar" style="width:62%;">62%</div></div>
+                <span class="val">2,385</span>
+              </div>
+              <div class="funnel-row">
+                <span class="lbl">면접</span>
+                <div class="barwrap"><div class="bar" style="width:38%;">38%</div></div>
+                <span class="val">1,462</span>
+              </div>
+              <div class="funnel-row">
+                <span class="lbl">최종합격</span>
+                <div class="barwrap"><div class="bar" style="width:21%;">21%</div></div>
+                <span class="val">808</span>
+              </div>
+              <div class="funnel-row">
+                <span class="lbl">입사확정</span>
+                <div class="barwrap"><div class="bar" style="width:18%;">18%</div></div>
+                <span class="val">693</span>
+              </div>
+            </div>
+            <div style="margin-top:18px;padding:14px;background:var(--cream);border-radius:10px;font-size:12px;color:var(--gray-4);line-height:1.6;">
+              💡 <b>전환율 인사이트:</b> 면접 → 최종합격 단계가 업계 평균 대비 +12%p 높음.
+              이력서 첨삭 + AI 매칭 영향으로 추정.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 알림 위젯 -->
+      <div class="two-col" style="margin-top:20px;">
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>처리 대기 항목</h3><div class="sub">관리자 액션이 필요한 작업</div></div>
+            <button class="btn btn-ghost btn-sm">전체 보기 →</button>
+          </div>
+          <div class="panel-body flush">
+            <table class="tbl">
+              <tbody>
+                <tr>
+                  <td><span class="pill pill-coral">⭐ W-Cert</span></td>
+                  <td><b>그린리프</b> 인증 심사 대기 · 7일 경과</td>
+                  <td style="text-align:right;"><button class="btn btn-sm btn-primary">심사 시작</button></td>
+                </tr>
+                <tr>
+                  <td><span class="pill pill-yellow">💼 공고</span></td>
+                  <td><b>화이트박스</b> 신규 공고 검토 필요</td>
+                  <td style="text-align:right;"><button class="btn btn-sm btn-primary">검토</button></td>
+                </tr>
+                <tr>
+                  <td><span class="pill pill-red">🚨 신고</span></td>
+                  <td>공고 #J-2841 차별적 표현 신고 (3건)</td>
+                  <td style="text-align:right;"><button class="btn btn-sm btn-red">조사</button></td>
+                </tr>
+                <tr>
+                  <td><span class="pill pill-blue">👤 회원</span></td>
+                  <td>본인인증 미완료 24시간 경과 (8명)</td>
+                  <td style="text-align:right;"><button class="btn btn-sm btn-outline">목록</button></td>
+                </tr>
+                <tr>
+                  <td><span class="pill pill-gray">💬 멘토링</span></td>
+                  <td>멘토 한지영님 정산 검토 대기</td>
+                  <td style="text-align:right;"><button class="btn btn-sm btn-outline">확인</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>인기 직군 Top 5</h3><div class="sub">이번 달 매칭 기준</div></div>
+          </div>
+          <div class="panel-body">
+            <div class="funnel">
+              <div class="funnel-row">
+                <span class="lbl">사무/행정</span>
+                <div class="barwrap"><div class="bar" style="width:88%;">38%</div></div>
+                <span class="val">1,462</span>
+              </div>
+              <div class="funnel-row">
+                <span class="lbl">교육/돌봄</span>
+                <div class="barwrap"><div class="bar" style="width:62%;background:linear-gradient(90deg,#4A6CF7,#6CB7FF);">26%</div></div>
+                <span class="val">1,001</span>
+              </div>
+              <div class="funnel-row">
+                <span class="lbl">디지털</span>
+                <div class="barwrap"><div class="bar" style="width:42%;background:linear-gradient(90deg,#2ECC71,#7FE2A8);">18%</div></div>
+                <span class="val">693</span>
+              </div>
+              <div class="funnel-row">
+                <span class="lbl">서비스</span>
+                <div class="barwrap"><div class="bar" style="width:24%;background:linear-gradient(90deg,#F4B400,#FFD86B);">11%</div></div>
+                <span class="val">423</span>
+              </div>
+              <div class="funnel-row">
+                <span class="lbl">전문직</span>
+                <div class="barwrap"><div class="bar" style="width:16%;background:linear-gradient(90deg,#9AA0AE,#C5C9D2);">7%</div></div>
+                <span class="val">268</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ USERS ============ -->
+    <div id="page-users" class="page">
+      <div class="topbar">
+        <div><h1>구직자 관리</h1><div class="sub">전체 12,847명 · 활성 9,231명</div></div>
+        <div class="top-actions">
+          <div class="search-bar"><span>🔍</span><input placeholder="이름·이메일·전화번호 검색"></div>
+          <button class="btn btn-outline">CSV 내보내기</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="filter-row">
+          <div class="left">
+            <button class="chip on">전체</button>
+            <button class="chip">활성</button>
+            <button class="chip">휴면</button>
+            <button class="chip">정지</button>
+            <button class="chip">탈퇴</button>
+          </div>
+          <div class="right">
+            <select class="sel">
+              <option>가입일 최신순</option><option>매칭률 높은순</option><option>지원수 많은순</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="panel-body flush">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>회원</th>
+                <th>지역</th>
+                <th>경력 / 단절</th>
+                <th>완성도</th>
+                <th>매칭점수</th>
+                <th>지원/합격</th>
+                <th>상태</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc1">김</div>
+                    <div><div class="nm">김민정 (47)</div><div class="meta">kim@example.com · 가입 2025.11</div></div>
+                  </div>
+                </td>
+                <td>서울 강남구</td>
+                <td>사무 6년 / 7년</td>
+                <td><b>78%</b></td>
+                <td><b style="color:var(--coral);">87</b></td>
+                <td>7 / 1</td>
+                <td><span class="pill pill-green">활성</span></td>
+                <td><button class="btn btn-sm btn-outline">상세</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc2">박</div>
+                    <div><div class="nm">박서연 (43)</div><div class="meta">park@example.com · 가입 2026.01</div></div>
+                  </div>
+                </td>
+                <td>경기 분당구</td>
+                <td>마케팅 4년 / 5년</td>
+                <td><b>92%</b></td>
+                <td><b style="color:var(--coral);">91</b></td>
+                <td>12 / 2</td>
+                <td><span class="pill pill-green">활성</span></td>
+                <td><button class="btn btn-sm btn-outline">상세</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc3">이</div>
+                    <div><div class="nm">이정희 (51)</div><div class="meta">lee@example.com · 가입 2025.08</div></div>
+                  </div>
+                </td>
+                <td>서울 마포구</td>
+                <td>디자인 8년 / 12년</td>
+                <td><b>85%</b></td>
+                <td><b style="color:var(--coral);">84</b></td>
+                <td>5 / 1</td>
+                <td><span class="pill pill-green">활성</span></td>
+                <td><button class="btn btn-sm btn-outline">상세</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc4">최</div>
+                    <div><div class="nm">최영주 (52)</div><div class="meta">choi@example.com · 가입 2025.06</div></div>
+                  </div>
+                </td>
+                <td>인천 연수구</td>
+                <td>회계 10년 / 9년</td>
+                <td><b>64%</b></td>
+                <td><b style="color:var(--coral);">72</b></td>
+                <td>3 / 0</td>
+                <td><span class="pill pill-yellow">휴면</span></td>
+                <td><button class="btn btn-sm btn-outline">상세</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc1">한</div>
+                    <div><div class="nm">한지영 (49)</div><div class="meta">han@example.com · 가입 2024.11</div></div>
+                  </div>
+                </td>
+                <td>서울 송파구</td>
+                <td>HR 12년 / 8년</td>
+                <td><b>96%</b></td>
+                <td><b style="color:var(--coral);">95</b></td>
+                <td>2 / 2</td>
+                <td><span class="pill pill-blue">멘토</span></td>
+                <td><button class="btn btn-sm btn-outline">상세</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc2">윤</div>
+                    <div><div class="nm">윤소영 (45)</div><div class="meta">yoon@example.com · 가입 2026.02</div></div>
+                  </div>
+                </td>
+                <td>경기 수원시</td>
+                <td>판매 3년 / 11년</td>
+                <td><b>42%</b></td>
+                <td><b style="color:var(--coral);">58</b></td>
+                <td>1 / 0</td>
+                <td><span class="pill pill-red">정지</span></td>
+                <td><button class="btn btn-sm btn-outline">상세</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc3">정</div>
+                    <div><div class="nm">정혜린 (44)</div><div class="meta">jung@example.com · 가입 2026.04</div></div>
+                  </div>
+                </td>
+                <td>서울 영등포구</td>
+                <td>간호 7년 / 6년</td>
+                <td><b>88%</b></td>
+                <td><b style="color:var(--coral);">89</b></td>
+                <td>4 / 1</td>
+                <td><span class="pill pill-green">활성</span></td>
+                <td><button class="btn btn-sm btn-outline">상세</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="padding:18px 22px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--gray-4);">
+          <span>1–7 / 12,847</span>
+          <div style="display:flex;gap:4px;">
+            <button class="btn btn-sm btn-outline">‹</button>
+            <button class="btn btn-sm btn-primary">1</button>
+            <button class="btn btn-sm btn-outline">2</button>
+            <button class="btn btn-sm btn-outline">3</button>
+            <button class="btn btn-sm btn-outline">…</button>
+            <button class="btn btn-sm btn-outline">1835</button>
+            <button class="btn btn-sm btn-outline">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ COMPANIES ============ -->
+    <div id="page-companies" class="page">
+      <div class="topbar">
+        <div><h1>기업 관리</h1><div class="sub">등록 기업 612개 · W-Cert 인증 428개</div></div>
+        <div class="top-actions">
+          <div class="search-bar"><span>🔍</span><input placeholder="기업명·사업자번호 검색"></div>
+          <button class="btn btn-primary">기업 직접 등록</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="filter-row">
+          <div class="left">
+            <button class="chip on">전체</button>
+            <button class="chip">W-Cert 인증</button>
+            <button class="chip">미인증</button>
+            <button class="chip">정지</button>
+          </div>
+          <div class="right">
+            <select class="sel"><option>업종 전체</option><option>IT</option><option>교육</option><option>제조</option></select>
+            <select class="sel"><option>규모 전체</option><option>스타트업</option><option>중소</option><option>중견</option><option>대기업</option></select>
+          </div>
+        </div>
+
+        <div class="panel-body flush">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>기업</th><th>업종</th><th>규모</th><th>지역</th><th>여성비율</th><th>활성공고</th><th>W-Cert</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="ucell"><div class="uav uc1">현</div><div><div class="nm">현우 에듀</div><div class="meta">123-45-67890</div></div></div></td>
+                <td>교육</td><td>중소</td><td>서울 강남</td><td>72%</td><td>14</td>
+                <td><span class="pill pill-coral">⭐ 인증</span></td>
+                <td><button class="btn btn-sm btn-outline">관리</button></td>
+              </tr>
+              <tr>
+                <td><div class="ucell"><div class="uav uc3">그</div><div><div class="nm">그린리프</div><div class="meta">234-56-78901</div></div></div></td>
+                <td>친환경</td><td>중견</td><td>경기 판교</td><td>58%</td><td>8</td>
+                <td><span class="pill pill-yellow">심사중</span></td>
+                <td><button class="btn btn-sm btn-outline">관리</button></td>
+              </tr>
+              <tr>
+                <td><div class="ucell"><div class="uav uc2">노</div><div><div class="nm">노을디자인</div><div class="meta">345-67-89012</div></div></div></td>
+                <td>디자인</td><td>스타트업</td><td>원격</td><td>81%</td><td>6</td>
+                <td><span class="pill pill-coral">⭐ 인증</span></td>
+                <td><button class="btn btn-sm btn-outline">관리</button></td>
+              </tr>
+              <tr>
+                <td><div class="ucell"><div class="uav uc4">맘</div><div><div class="nm">맘스데이케어</div><div class="meta">456-78-90123</div></div></div></td>
+                <td>돌봄</td><td>중소</td><td>서울 마포</td><td>89%</td><td>11</td>
+                <td><span class="pill pill-coral">⭐ 인증</span></td>
+                <td><button class="btn btn-sm btn-outline">관리</button></td>
+              </tr>
+              <tr>
+                <td><div class="ucell"><div class="uav uc1">화</div><div><div class="nm">화이트박스</div><div class="meta">567-89-01234</div></div></div></td>
+                <td>IT</td><td>중소</td><td>하이브리드</td><td>45%</td><td>3</td>
+                <td><span class="pill pill-gray">미인증</span></td>
+                <td><button class="btn btn-sm btn-outline">관리</button></td>
+              </tr>
+              <tr>
+                <td><div class="ucell"><div class="uav uc3">사</div><div><div class="nm">사람과미디어</div><div class="meta">678-90-12345</div></div></div></td>
+                <td>미디어</td><td>중견</td><td>서울 종로</td><td>67%</td><td>9</td>
+                <td><span class="pill pill-coral">⭐ 인증</span></td>
+                <td><button class="btn btn-sm btn-outline">관리</button></td>
+              </tr>
+              <tr>
+                <td><div class="ucell"><div class="uav uc2">디</div><div><div class="nm">디케어솔루션</div><div class="meta">789-01-23456</div></div></div></td>
+                <td>헬스케어</td><td>대기업</td><td>전국</td><td>52%</td><td>0</td>
+                <td><span class="pill pill-red">인증취소</span></td>
+                <td><button class="btn btn-sm btn-outline">관리</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ W-CERT ============ -->
+    <div id="page-wcert" class="page">
+      <div class="topbar">
+        <div><h1>W-Cert 인증 심사</h1><div class="sub">대기 14건 · 진행 6건 · 이번달 처리 22건</div></div>
+        <div class="top-actions">
+          <button class="btn btn-outline">인증 기준 설정</button>
+          <button class="btn btn-primary">심사 가이드</button>
+        </div>
+      </div>
+
+      <!-- KPI mini -->
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-label">신규 신청</div><div class="kpi-value">14</div><div class="kpi-sub">평균 대기 5.2일</div></div>
+        <div class="kpi-card"><div class="kpi-label">심사중</div><div class="kpi-value">6</div><div class="kpi-sub">담당 배정 완료</div></div>
+        <div class="kpi-card"><div class="kpi-label">이번달 통과</div><div class="kpi-value" style="color:var(--green);">16</div><div class="kpi-sub">통과율 73%</div></div>
+        <div class="kpi-card"><div class="kpi-label">이번달 거절</div><div class="kpi-value" style="color:var(--red);">6</div><div class="kpi-sub">주요 사유: 유연근무 미달</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div><h3>심사 대기열</h3><div class="sub">신청 순으로 정렬 · 7일 초과 시 빨간색 표시</div></div>
+          <select class="sel"><option>대기 (14)</option><option>심사중 (6)</option><option>이번달 처리 (22)</option></select>
+        </div>
+
+        <div class="panel-body flush">
+
+          <!-- 신청 1 -->
+          <div class="wc-card">
+            <div class="wc-top">
+              <div class="wc-logo uc3">그</div>
+              <div class="wc-meta">
+                <h4>그린리프 <span class="pill pill-coral" style="margin-left:6px;">7일 경과</span></h4>
+                <div class="info">사업자 234-56-78901 · 친환경 · 중견 · 직원 187명 · 신청일 2026.05.12</div>
+              </div>
+              <div class="wc-actions">
+                <button class="btn btn-sm btn-outline">증빙 보기</button>
+                <button class="btn btn-sm btn-primary">상세 심사</button>
+              </div>
+            </div>
+            <div class="wc-criteria">
+              <div class="wc-crit pass"><div class="l">유연근무 실사용</div><div class="v">68%</div></div>
+              <div class="wc-crit pass"><div class="l">관리직 여성</div><div class="v">34%</div></div>
+              <div class="wc-crit pass"><div class="l">단절채용 트랙</div><div class="v">운영</div></div>
+              <div class="wc-crit pass"><div class="l">육아휴직 사용률</div><div class="v">82%</div></div>
+              <div class="wc-crit fail"><div class="l">임금격차 공개</div><div class="v">미공개</div></div>
+              <div class="wc-crit pass"><div class="l">재직자 평점</div><div class="v">4.3</div></div>
+            </div>
+            <div style="font-size:12px;color:var(--gray-4);">📋 6개 기준 중 5개 통과 · 자동 점수 <b style="color:var(--navy);">4.1 / 5.0</b> · 추가 자료 요청 권장</div>
+          </div>
+
+          <!-- 신청 2 -->
+          <div class="wc-card">
+            <div class="wc-top">
+              <div class="wc-logo uc1">화</div>
+              <div class="wc-meta">
+                <h4>화이트박스</h4>
+                <div class="info">사업자 567-89-01234 · IT · 중소 · 직원 42명 · 신청일 2026.05.16</div>
+              </div>
+              <div class="wc-actions">
+                <button class="btn btn-sm btn-outline">증빙 보기</button>
+                <button class="btn btn-sm btn-primary">상세 심사</button>
+              </div>
+            </div>
+            <div class="wc-criteria">
+              <div class="wc-crit fail"><div class="l">유연근무 실사용</div><div class="v">42%</div></div>
+              <div class="wc-crit fail"><div class="l">관리직 여성</div><div class="v">18%</div></div>
+              <div class="wc-crit fail"><div class="l">단절채용 트랙</div><div class="v">미운영</div></div>
+              <div class="wc-crit pass"><div class="l">육아휴직 사용률</div><div class="v">65%</div></div>
+              <div class="wc-crit pass"><div class="l">임금격차 공개</div><div class="v">공개</div></div>
+              <div class="wc-crit pass"><div class="l">재직자 평점</div><div class="v">4.0</div></div>
+            </div>
+            <div style="font-size:12px;color:var(--gray-4);">📋 6개 기준 중 3개 통과 · 자동 점수 <b style="color:var(--red);">2.8 / 5.0</b> · 거절 권장 (기준 미달)</div>
+          </div>
+
+          <!-- 신청 3 -->
+          <div class="wc-card">
+            <div class="wc-top">
+              <div class="wc-logo uc2">테</div>
+              <div class="wc-meta">
+                <h4>테크우먼랩</h4>
+                <div class="info">사업자 890-12-34567 · IT · 스타트업 · 직원 28명 · 신청일 2026.05.18</div>
+              </div>
+              <div class="wc-actions">
+                <button class="btn btn-sm btn-outline">증빙 보기</button>
+                <button class="btn btn-sm btn-primary">상세 심사</button>
+              </div>
+            </div>
+            <div class="wc-criteria">
+              <div class="wc-crit pass"><div class="l">유연근무 실사용</div><div class="v">95%</div></div>
+              <div class="wc-crit pass"><div class="l">관리직 여성</div><div class="v">62%</div></div>
+              <div class="wc-crit pass"><div class="l">단절채용 트랙</div><div class="v">운영</div></div>
+              <div class="wc-crit pass"><div class="l">육아휴직 사용률</div><div class="v">100%</div></div>
+              <div class="wc-crit pass"><div class="l">임금격차 공개</div><div class="v">공개</div></div>
+              <div class="wc-crit pass"><div class="l">재직자 평점</div><div class="v">4.8</div></div>
+            </div>
+            <div style="font-size:12px;color:var(--gray-4);">📋 6개 기준 전부 통과 · 자동 점수 <b style="color:var(--green);">4.9 / 5.0</b> · 승인 권장 ✨</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ JOBS ============ -->
+    <div id="page-jobs" class="page">
+      <div class="topbar">
+        <div><h1>공고 관리</h1><div class="sub">활성 428건 · 검토대기 23건 · 신고 8건</div></div>
+        <div class="top-actions">
+          <div class="search-bar"><span>🔍</span><input placeholder="공고제목·기업명 검색"></div>
+          <button class="btn btn-outline">CSV</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="tabs">
+          <span class="tab active">검토 대기 (23)</span>
+          <span class="tab">게시중 (428)</span>
+          <span class="tab">반려 (12)</span>
+          <span class="tab">마감 (1,847)</span>
+        </div>
+
+        <div class="filter-row">
+          <div class="left">
+            <button class="chip on">전체</button>
+            <button class="chip">사무/행정</button>
+            <button class="chip">교육/돌봄</button>
+            <button class="chip">디지털</button>
+            <button class="chip">서비스</button>
+            <button class="chip">전문직</button>
+          </div>
+          <div class="right">
+            <select class="sel"><option>신규 순</option><option>대기시간 긴 순</option></select>
+          </div>
+        </div>
+
+        <div class="panel-body flush">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>공고</th><th>근무형태</th><th>지역</th><th>등록일</th><th>유연근무 적격</th><th>차별표현</th><th>상태</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc3">그</div>
+                    <div><div class="nm">사내 행정 어시스턴트 (시간선택제)</div><div class="meta">그린리프 · J-3104</div></div>
+                  </div>
+                </td>
+                <td><span class="pill pill-coral">시간선택제</span></td>
+                <td>판교</td>
+                <td>05.18 11:24</td>
+                <td><span style="color:var(--green);">✓ 적격</span></td>
+                <td><span style="color:var(--green);">✓ 없음</span></td>
+                <td><span class="pill pill-yellow">검토대기</span></td>
+                <td><button class="btn btn-sm btn-primary">검토</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc1">화</div>
+                    <div><div class="nm">데이터 입력/검수 매니저</div><div class="meta">화이트박스 · J-3105</div></div>
+                  </div>
+                </td>
+                <td><span class="pill pill-coral">하이브리드</span></td>
+                <td>원격</td>
+                <td>05.18 09:11</td>
+                <td><span style="color:var(--green);">✓ 적격</span></td>
+                <td><span style="color:var(--gold);">⚠ 검토</span></td>
+                <td><span class="pill pill-yellow">검토대기</span></td>
+                <td><button class="btn btn-sm btn-primary">검토</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc2">스</div>
+                    <div><div class="nm">정규직 사무직 (35세 이하)</div><div class="meta">스피드코퍼 · J-3106</div></div>
+                  </div>
+                </td>
+                <td><span class="pill pill-gray">풀타임</span></td>
+                <td>서울</td>
+                <td>05.17 16:48</td>
+                <td><span style="color:var(--red);">✗ 부적격</span></td>
+                <td><span style="color:var(--red);">✗ 연령차별</span></td>
+                <td><span class="pill pill-red">자동 반려</span></td>
+                <td><button class="btn btn-sm btn-outline">상세</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc4">맘</div>
+                    <div><div class="nm">아이돌봄 코디네이터 추가모집</div><div class="meta">맘스데이케어 · J-3107</div></div>
+                  </div>
+                </td>
+                <td><span class="pill pill-coral">단축근무</span></td>
+                <td>서울</td>
+                <td>05.17 14:02</td>
+                <td><span style="color:var(--green);">✓ 적격</span></td>
+                <td><span style="color:var(--green);">✓ 없음</span></td>
+                <td><span class="pill pill-green">자동 승인</span></td>
+                <td><button class="btn btn-sm btn-outline">상세</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ucell">
+                    <div class="uav uc1">현</div>
+                    <div><div class="nm">초등 방과후 영어 강사 (오후반)</div><div class="meta">현우 에듀 · J-3108</div></div>
+                  </div>
+                </td>
+                <td><span class="pill pill-coral">시간선택제</span></td>
+                <td>강남</td>
+                <td>05.17 10:30</td>
+                <td><span style="color:var(--green);">✓ 적격</span></td>
+                <td><span style="color:var(--green);">✓ 없음</span></td>
+                <td><span class="pill pill-yellow">검토대기</span></td>
+                <td><button class="btn btn-sm btn-primary">검토</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ REPORTS ============ -->
+    <div id="page-reports" class="page">
+      <div class="topbar">
+        <div><h1>신고 관리</h1><div class="sub">미처리 8건 · 조사중 3건 · 이번달 처리 47건</div></div>
+        <div class="top-actions">
+          <button class="btn btn-outline">신고 정책 보기</button>
+          <button class="btn btn-primary">일괄 처리</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-label">미처리</div><div class="kpi-value" style="color:var(--red);">8</div><div class="kpi-sub">평균 응답 6시간</div></div>
+        <div class="kpi-card"><div class="kpi-label">조사중</div><div class="kpi-value" style="color:var(--gold);">3</div><div class="kpi-sub">담당자 배정 완료</div></div>
+        <div class="kpi-card"><div class="kpi-label">이번달 처리</div><div class="kpi-value" style="color:var(--green);">47</div><div class="kpi-sub">조치율 87%</div></div>
+        <div class="kpi-card"><div class="kpi-label">신고자 신뢰도</div><div class="kpi-value">94%</div><div class="kpi-sub">유효 신고 비율</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="tabs">
+          <span class="tab active">미처리 (8)</span>
+          <span class="tab">조사중 (3)</span>
+          <span class="tab">처리완료</span>
+          <span class="tab">반려</span>
+        </div>
+        <div class="filter-row">
+          <div class="left">
+            <button class="chip on">전체</button>
+            <button class="chip">공고</button>
+            <button class="chip">기업</button>
+            <button class="chip">회원</button>
+            <button class="chip">리뷰</button>
+          </div>
+        </div>
+
+        <div class="panel-body flush">
+
+          <div class="rep-card">
+            <div class="rep-icon">🚨</div>
+            <div class="rep-body">
+              <div class="t">공고 #J-2841 · 차별적 표현 신고 (3건)</div>
+              <div class="m">대상: 스피드코퍼 · "젊고 활기찬 분만 지원" 문구 · 신고일 2026.05.18</div>
+              <div class="d">신고자 3명: "연령에 따른 차별적 표현으로 보입니다." / "중년이라는 이유로 지원조차 못 하게 만드는 표현입니다."</div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:flex-start;">
+              <button class="btn btn-sm btn-outline">공고보기</button>
+              <button class="btn btn-sm btn-red">조사 시작</button>
+            </div>
+          </div>
+
+          <div class="rep-card">
+            <div class="rep-icon">🚨</div>
+            <div class="rep-body">
+              <div class="t">기업 #C-0184 · 허위 채용 의혹 (2건)</div>
+              <div class="m">대상: 디케어솔루션 · 합격 후 연락 두절 신고 · 신고일 2026.05.17</div>
+              <div class="d">"면접 후 합격 통보까지 받았으나 입사일 안내가 없고 연락이 두절됨"</div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:flex-start;">
+              <button class="btn btn-sm btn-outline">기업보기</button>
+              <button class="btn btn-sm btn-red">조사 시작</button>
+            </div>
+          </div>
+
+          <div class="rep-card">
+            <div class="rep-icon">🚨</div>
+            <div class="rep-body">
+              <div class="t">리뷰 #R-9023 · 부적절한 표현 신고</div>
+              <div class="m">대상: 노을디자인 익명 리뷰 · 신고일 2026.05.16</div>
+              <div class="d">리뷰 내용 중 인신공격성 표현 포함 의심</div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:flex-start;">
+              <button class="btn btn-sm btn-outline">리뷰보기</button>
+              <button class="btn btn-sm btn-red">검토</button>
+            </div>
+          </div>
+
+          <div class="rep-card">
+            <div class="rep-icon">🚨</div>
+            <div class="rep-body">
+              <div class="t">회원 #U-4012 · 스팸 메시지 발송 신고 (5건)</div>
+              <div class="m">대상: 익명 · 멘토링 채팅창에서 외부 사이트 유도 · 신고일 2026.05.16</div>
+              <div class="d">5명의 멘티가 동일 패턴의 외부 링크 전송을 신고함</div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:flex-start;">
+              <button class="btn btn-sm btn-outline">회원보기</button>
+              <button class="btn btn-sm btn-red">즉시정지</button>
+            </div>
+          </div>
+
+          <div class="rep-card">
+            <div class="rep-icon">🚨</div>
+            <div class="rep-body">
+              <div class="t">공고 #J-2798 · 유연근무 허위 표기 (1건)</div>
+              <div class="m">대상: 베스트워크 · "재택근무 가능" 표기했으나 실제로는 불가 · 신고일 2026.05.15</div>
+              <div class="d">"공고에는 재택 100%라 했지만, 면접 자리에서 출근 필수라고 안내받았습니다."</div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:flex-start;">
+              <button class="btn btn-sm btn-outline">공고보기</button>
+              <button class="btn btn-sm btn-red">조사 시작</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function go(p){
+    document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+    document.getElementById('page-'+p).classList.add('active');
+    document.querySelectorAll('.nav-link').forEach(el=>el.classList.toggle('active', el.dataset.page===p));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  // tab switch (visual only)
+  document.addEventListener('click', e=>{
+    if(e.target.classList.contains('tab')){
+      const sib = e.target.parentNode.querySelectorAll('.tab');
+      sib.forEach(t=>t.classList.remove('active'));
+      e.target.classList.add('active');
+    }
+    if(e.target.classList.contains('chip')){
+      const sib = e.target.parentNode.querySelectorAll('.chip');
+      sib.forEach(c=>c.classList.remove('on'));
+      e.target.classList.add('on');
+    }
+  });
+</script>
+</body>
+</html>

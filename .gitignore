@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+.venv/
+venv/
+env/
+.env
+
+# SQLite (로컬 테스트 DB는 커밋하지 않음)
+*.db
+*.db-journal
+*.sqlite
+
+# 에디터
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 로그
+*.log

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>다시봄 | 기업 콘솔</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--coral:#FF6B6B;--coral-dark:#E85555;--peach:#FFE5D9;--cream:#FFF8F3;--navy:#1F2A44;
+        --bg:#F4F5F8;--gray-1:#F7F7F9;--gray-2:#E9EAEE;--gray-3:#9AA0AE;--gray-4:#5A6172;
+        --green:#2ECC71;--gold:#F4B400;--blue:#4A6CF7;--red:#E53935;
+        --shadow:0 4px 18px rgba(31,42,68,0.08);--radius:14px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{font-family:'Noto Sans KR',sans-serif;color:var(--navy);background:var(--bg);font-size:14px;}
+  a,button{cursor:pointer;}button{font-family:inherit;border:none;background:none;color:inherit;}
+
+  nav.top{background:#fff;border-bottom:1px solid var(--gray-2);position:sticky;top:0;z-index:50;}
+  .nav-in{max-width:1160px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:32px;}
+  .logo{font-weight:900;font-size:19px;display:flex;align-items:center;gap:8px;}
+  .logo-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--coral),#FF9A8B);
+             color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;}
+  .nlinks{display:flex;gap:24px;flex:1;}
+  .nlinks a{font-size:14px;color:var(--gray-4);font-weight:500;padding:6px 0;border-bottom:2px solid transparent;}
+  .nlinks a.on,.nlinks a:hover{color:var(--navy);border-color:var(--coral);}
+  .nright{display:flex;align-items:center;gap:10px;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:8px;
+       font-weight:600;font-size:13px;padding:9px 16px;border:1px solid transparent;transition:.15s;}
+  .btn-primary{background:var(--coral);color:#fff;}.btn-primary:hover{background:var(--coral-dark);}
+  .btn-outline{background:#fff;color:var(--navy);border-color:var(--gray-2);}.btn-outline:hover{border-color:var(--navy);}
+  .btn-ghost{background:transparent;color:var(--gray-4);}.btn-ghost:hover{background:var(--gray-1);}
+  .btn-sm{padding:6px 12px;font-size:12px;}.btn-lg{padding:13px 22px;font-size:14px;}
+
+  .container{max-width:1000px;margin:0 auto;padding:28px 24px;}
+
+  .panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:20px;}
+  .panel-head{padding:18px 22px;border-bottom:1px solid var(--gray-2);display:flex;justify-content:space-between;align-items:center;}
+  .panel-head h2{font-size:18px;font-weight:900;}
+  .panel-head .sub{font-size:12px;color:var(--gray-4);margin-top:2px;}
+  .panel-body{padding:22px;}
+
+  .form-row{margin-bottom:14px;}
+  .form-row label{display:block;font-size:12px;color:var(--gray-4);font-weight:700;margin-bottom:5px;}
+  .form-row input,.form-row select,.form-row textarea{
+    width:100%;padding:10px 12px;border:1px solid var(--gray-2);border-radius:8px;font-size:14px;background:#fff;}
+  .form-row textarea{resize:vertical;min-height:90px;font-family:inherit;}
+  .form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:none;border-color:var(--coral);}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .chk-list{display:flex;gap:8px;flex-wrap:wrap;}
+  .chk-list label{display:inline-flex;gap:5px;align-items:center;font-size:13px;padding:6px 10px;background:var(--gray-1);border-radius:8px;cursor:pointer;}
+  .chk-list label.on{background:#FFE5E5;color:var(--coral);font-weight:700;}
+  .chk-list input{display:none;}
+  .chk-line{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--gray-4);padding:8px 0;}
+  .chk-line label{display:inline-flex;gap:6px;align-items:center;cursor:pointer;}
+  .chk-line input{accent-color:var(--coral);}
+
+  .alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;}
+  .alert.err{background:#FFE5E5;color:var(--red);display:block;}
+  .alert.ok{background:#E0F2E9;color:var(--green);display:block;}
+
+  .empty{padding:46px 0;text-align:center;color:var(--gray-3);font-size:13px;}
+
+  .co-card{padding:18px;background:var(--cream);border-radius:12px;display:grid;
+           grid-template-columns:54px 1fr auto;gap:14px;align-items:center;}
+  .co-logo{width:54px;height:54px;border-radius:14px;background:#fff;color:var(--coral);
+           display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;}
+  .co-info .n{font-weight:900;font-size:17px;margin-bottom:3px;}
+  .co-info .m{font-size:12px;color:var(--gray-4);}
+  .pill{display:inline-block;padding:4px 10px;font-size:11px;font-weight:700;border-radius:100px;}
+  .p-yel{background:#FFF4D6;color:#D4A100;}.p-blu{background:#E5EBFF;color:var(--blue);}
+  .p-grn{background:#E0F2E9;color:var(--green);}.p-red{background:#FFE5E5;color:var(--red);}
+  .p-gry{background:var(--gray-1);color:var(--gray-4);}.p-coral{background:#FFE5E5;color:var(--coral);}
+
+  .job-row{padding:14px 0;border-bottom:1px solid var(--gray-2);display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .job-row:last-child{border:none;}
+  .job-row .t{font-weight:700;margin-bottom:4px;}
+  .job-row .m{font-size:12px;color:var(--gray-4);}
+
+  /* modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(31,42,68,.55);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
+  .modal-bg.show{display:flex;}
+  .modal{background:#fff;border-radius:18px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;}
+  .modal-head{padding:22px 26px;border-bottom:1px solid var(--gray-2);display:flex;justify-content:space-between;align-items:center;}
+  .modal-head h2{font-size:18px;font-weight:900;}
+  .modal-head .close{font-size:22px;color:var(--gray-3);}
+  .modal-body{padding:24px 26px;}
+
+  .login-wrap{max-width:380px;margin:60px auto;}
+  @media(max-width:680px){.nlinks{display:none;}.form-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="nav-in">
+    <div class="logo" onclick="location.href='/employer.html'"><span class="logo-mark">다</span>다시봄 · 기업</div>
+    <div class="nlinks">
+      <a class="nav-link on" onclick="goSection('home')">기업 정보</a>
+      <a class="nav-link" onclick="goSection('jobs')">공고 관리</a>
+    </div>
+    <div class="nright" id="nav-auth"></div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- 비로그인 화면 -->
+  <div id="auth-area" class="login-wrap" style="display:none;">
+    <div class="panel">
+      <div class="panel-head"><h2 id="auth-title">기업 로그인</h2></div>
+      <div class="panel-body">
+        <div class="alert" id="auth-alert"></div>
+        <div id="auth-form-login">
+          <div class="form-row"><label>이메일</label><input id="lg-email" type="email" placeholder="company@example.com"></div>
+          <div class="form-row"><label>비밀번호</label><input id="lg-pw" type="password"></div>
+          <button class="btn btn-primary" style="width:100%;" onclick="doLogin()">로그인</button>
+          <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--gray-4);">
+            기업 계정이 없으신가요? <a style="color:var(--coral);font-weight:700;" onclick="toggleAuth('signup')">기업 회원가입</a>
+          </div>
+        </div>
+        <div id="auth-form-signup" style="display:none;">
+          <div class="form-row"><label>담당자 이메일 *</label><input id="su-email" type="email"></div>
+          <div class="form-row"><label>비밀번호 * (4자 이상)</label><input id="su-pw" type="password"></div>
+          <div class="form-row"><label>담당자 이름 *</label><input id="su-name" type="text"></div>
+          <button class="btn btn-primary" style="width:100%;" onclick="doSignup()">기업 담당자 가입</button>
+          <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--gray-4);">
+            이미 계정이 있으신가요? <a style="color:var(--coral);font-weight:700;" onclick="toggleAuth('login')">로그인</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 메인 콘텐츠 -->
+  <div id="main-area" style="display:none;">
+
+    <!-- 기업 정보 (등록 또는 표시) -->
+    <div id="sec-home">
+      <div id="company-display" style="display:none;">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>우리 기업</h2>
+            <button class="btn btn-outline btn-sm" onclick="goSection('jobs')">공고 관리 →</button>
+          </div>
+          <div class="panel-body" id="company-card"></div>
+        </div>
+      </div>
+
+      <div id="company-register" style="display:none;">
+        <div class="panel">
+          <div class="panel-head">
+            <div><h2>기업 등록</h2><div class="sub">W-Cert 인증 신청을 위해 기본 정보를 입력해 주세요.</div></div>
+          </div>
+          <div class="panel-body">
+            <div class="alert" id="co-alert"></div>
+            <div class="form-grid">
+              <div class="form-row"><label>기업명 *</label><input id="co-name" type="text"></div>
+              <div class="form-row"><label>사업자등록번호 *</label><input id="co-biz" type="text" placeholder="000-00-00000"></div>
+              <div class="form-row"><label>업종</label><input id="co-ind" type="text" placeholder="교육 / IT / ..."></div>
+              <div class="form-row"><label>규모</label>
+                <select id="co-size">
+                  <option value="">선택</option>
+                  <option value="startup">스타트업 (~30명)</option>
+                  <option value="small">중소 (30-300명)</option>
+                  <option value="medium">중견 (300-1000명)</option>
+                  <option value="large">대기업 (1000명+)</option>
+                </select>
+              </div>
+              <div class="form-row"><label>지역 (시/도)</label>
+                <select id="co-sido">
+                  <option value="">선택</option><option>서울</option><option>경기</option><option>인천</option>
+                  <option>부산</option><option>대구</option><option>광주</option><option>대전</option><option>기타</option>
+                </select>
+              </div>
+              <div class="form-row"><label>시/군/구</label><input id="co-sgg" type="text"></div>
+              <div class="form-row"><label>여성 직원 비율 (%)</label><input id="co-fr" type="number" step="0.1" placeholder="60"></div>
+              <div class="form-row"><label>관리직 여성 비율 (%)</label><input id="co-mr" type="number" step="0.1" placeholder="35"></div>
+              <div class="form-row"><label>유연근무 실사용률 (%)</label><input id="co-flex" type="number" step="0.1" placeholder="65"></div>
+              <div class="form-row"><label>로고 한글자</label><input id="co-logo" type="text" maxlength="1" placeholder="자동 추출"></div>
+            </div>
+            <div class="form-row"><label>기업 소개</label><textarea id="co-desc"></textarea></div>
+            <button class="btn btn-primary btn-lg" style="width:100%;" onclick="createCompany()">기업 등록 + W-Cert 신청</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 공고 관리 -->
+    <div id="sec-jobs" style="display:none;">
+      <div class="panel">
+        <div class="panel-head">
+          <div><h2>채용공고 등록</h2><div class="sub">유연근무가 보장된 공고만 게시할 수 있습니다.</div></div>
+        </div>
+        <div class="panel-body">
+          <div class="alert" id="job-alert"></div>
+          <div class="form-row"><label>공고 제목 *</label><input id="j-title" type="text" placeholder="예: 사내 행정 어시스턴트 (시간선택제)"></div>
+          <div class="form-grid">
+            <div class="form-row"><label>직군 *</label><select id="j-cat"></select></div>
+            <div class="form-row"><label>지역 (시/도)</label>
+              <select id="j-sido">
+                <option value="">선택</option><option>서울</option><option>경기</option><option>인천</option><option>기타</option>
+              </select>
+            </div>
+            <div class="form-row"><label>주당 최소 시간</label><input id="j-hmin" type="number" placeholder="20"></div>
+            <div class="form-row"><label>주당 최대 시간</label><input id="j-hmax" type="number" placeholder="30"></div>
+            <div class="form-row"><label>급여 형태</label>
+              <select id="j-stype">
+                <option value="monthly">월급</option><option value="annual">연봉</option><option value="hourly">시급</option>
+              </select>
+            </div>
+            <div class="form-row"><label>급여 최소 (원)</label><input id="j-smin" type="number" placeholder="2000000"></div>
+          </div>
+          <div class="form-row"><label>근무 형태 * (1개 이상 필수)</label>
+            <div class="chk-list" id="j-wt">
+              <label data-v="part_time"><input type="checkbox">시간선택제</label>
+              <label data-v="flex"><input type="checkbox">자율출퇴근</label>
+              <label data-v="remote"><input type="checkbox">100% 재택</label>
+              <label data-v="hybrid"><input type="checkbox">하이브리드</label>
+              <label data-v="full_time"><input type="checkbox">풀타임 (비권장)</label>
+            </div>
+          </div>
+          <div class="chk-line">
+            <label><input type="checkbox" id="j-remote"> 원격근무 가능</label>
+            <label><input type="checkbox" id="j-gap" checked> 경력단절 채용 트랙</label>
+            <label><input type="checkbox" id="j-senior"> 50세 이상 우대</label>
+            <label><input type="checkbox" id="j-noexp"> 무경력 OK</label>
+          </div>
+          <div class="form-row"><label>공고 상세 *</label><textarea id="j-desc" rows="5"></textarea></div>
+          <div class="form-row"><label>자격 요건</label><textarea id="j-qual" rows="3"></textarea></div>
+          <button class="btn btn-primary btn-lg" style="width:100%;" onclick="createJob()">공고 등록 신청</button>
+          <div style="font-size:11px;color:var(--gray-3);text-align:center;margin-top:8px;">
+            * 등록 시 관리자 검토 후 게시됩니다. (보통 1영업일 이내)
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>내 공고 목록</h2>
+          <button class="btn btn-outline btn-sm" onclick="loadMyJobs()">새로고침</button>
+        </div>
+        <div class="panel-body" id="my-jobs-list"><div class="empty">불러오는 중…</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let me=null, myCompany=null, cats=[];
+const $ = s=>document.querySelector(s);
+const $$ = s=>document.querySelectorAll(s);
+
+async function api(path, opts={}){
+  const r = await fetch(path, {credentials:'include', headers:{'Content-Type':'application/json'}, ...opts});
+  const data = r.status===204 ? null : await r.json();
+  if(!r.ok){ throw new Error(data.detail||'API 오류'); }
+  return data;
+}
+
+document.addEventListener('change', e=>{
+  if(e.target.type==='checkbox' && e.target.closest('.chk-list label')){
+    e.target.closest('label').classList.toggle('on', e.target.checked);
+  }
+});
+
+function toggleAuth(mode){
+  $('#auth-title').textContent = mode==='signup'?'기업 회원가입':'기업 로그인';
+  $('#auth-form-login').style.display = mode==='login'?'block':'none';
+  $('#auth-form-signup').style.display = mode==='signup'?'block':'none';
+  $('#auth-alert').className = 'alert';
+}
+
+function showAlert(id, msg, type='err'){
+  const a = $('#'+id); a.className='alert '+type; a.textContent=msg;
+}
+
+async function refreshMe(){
+  try{
+    const r = await api('/api/auth/me');
+    if(!r.authenticated){ me=null; myCompany=null; }
+    else if(r.role!=='employer' && r.role!=='admin'){
+      alert('기업 계정으로 로그인이 필요합니다.');
+      await api('/api/auth/logout', {method:'POST'});
+      me=null; myCompany=null;
+    }else{
+      me = r; myCompany = r.company || null;
+    }
+  }catch{ me=null; myCompany=null; }
+  render();
+}
+
+function render(){
+  const auth = $('#auth-area'), main = $('#main-area'), navAuth = $('#nav-auth');
+  if(!me){
+    auth.style.display='block'; main.style.display='none';
+    navAuth.innerHTML = `<a class="btn btn-ghost btn-sm" href="/app.html">구직자 페이지</a>`;
+    return;
+  }
+  auth.style.display='none'; main.style.display='block';
+  navAuth.innerHTML = `
+    <span style="font-size:13px;color:var(--gray-4);">${me.email}</span>
+    <button class="btn btn-outline btn-sm" onclick="doLogout()">로그아웃</button>
+  `;
+  if(myCompany){
+    $('#company-display').style.display='block';
+    $('#company-register').style.display='none';
+    renderCompany();
+  }else{
+    $('#company-display').style.display='none';
+    $('#company-register').style.display='block';
+  }
+}
+
+function renderCompany(){
+  const c = myCompany;
+  const wcert = {
+    approved: ['p-coral','⭐ W-Cert 인증 완료'],
+    under_review: ['p-yel','심사 진행중'],
+    applied: ['p-yel','신청 접수'],
+    rejected: ['p-red','심사 반려'],
+  }[c.wcert_status] || ['p-gry', c.wcert_status];
+  $('#company-card').innerHTML = `
+    <div class="co-card">
+      <div class="co-logo">${c.logo_initial||c.name[0]}</div>
+      <div class="co-info">
+        <div class="n">${c.name} <span class="pill ${wcert[0]}" style="margin-left:6px;">${wcert[1]}</span></div>
+        <div class="m">사업자 ${c.business_no} · ${c.industry||'-'} · ${c.region_sido||''} ${c.region_sigungu||''}</div>
+        <div class="m" style="margin-top:6px;">여성 ${pct(c.female_ratio)} · 관리직 여성 ${pct(c.female_mgr_ratio)} · 유연근무 ${pct(c.flex_usage_ratio)}</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;color:var(--gray-4);font-size:13px;">${c.description||''}</div>
+  `;
+}
+function pct(v){ return v==null?'-':((v*100).toFixed(0)+'%'); }
+
+function goSection(s){
+  $$('.nav-link').forEach(el=>el.classList.remove('on'));
+  document.querySelector('.nav-link[onclick*="'+s+'"]').classList.add('on');
+  $('#sec-home').style.display = s==='home'?'block':'none';
+  $('#sec-jobs').style.display = s==='jobs'?'block':'none';
+  if(s==='jobs'){
+    if(!myCompany){ alert('먼저 기업 정보를 등록해주세요.'); goSection('home'); return; }
+    loadMyJobs();
+  }
+}
+
+async function doLogin(){
+  try{
+    await api('/api/auth/login', {method:'POST', body: JSON.stringify({
+      email:$('#lg-email').value.trim(), password:$('#lg-pw').value
+    })});
+    await refreshMe();
+  }catch(e){ showAlert('auth-alert', e.message); }
+}
+
+async function doSignup(){
+  try{
+    const body = {
+      email: $('#su-email').value.trim(),
+      password: $('#su-pw').value,
+      name: $('#su-name').value.trim(),
+      role: 'employer'
+    };
+    if(!body.email||!body.password||!body.name){ showAlert('auth-alert','필수 항목을 입력하세요.'); return; }
+    await api('/api/auth/signup', {method:'POST', body: JSON.stringify(body)});
+    await refreshMe();
+  }catch(e){ showAlert('auth-alert', e.message); }
+}
+
+async function doLogout(){
+  await api('/api/auth/logout', {method:'POST'});
+  await refreshMe();
+}
+
+async function createCompany(){
+  try{
+    const body = {
+      name: $('#co-name').value.trim(),
+      business_no: $('#co-biz').value.trim(),
+      industry: $('#co-ind').value.trim(),
+      size: $('#co-size').value || null,
+      region_sido: $('#co-sido').value || null,
+      region_sigungu: $('#co-sgg').value.trim() || null,
+      description: $('#co-desc').value.trim(),
+      logo_initial: $('#co-logo').value.trim() || null,
+      female_ratio: parseFloat($('#co-fr').value)/100||null,
+      female_mgr_ratio: parseFloat($('#co-mr').value)/100||null,
+      flex_usage_ratio: parseFloat($('#co-flex').value)/100||null,
+    };
+    if(!body.name||!body.business_no){ showAlert('co-alert','기업명과 사업자번호는 필수입니다.'); return; }
+    await api('/api/companies', {method:'POST', body: JSON.stringify(body)});
+    showAlert('co-alert','등록 완료! W-Cert 심사를 시작합니다.','ok');
+    await refreshMe();
+  }catch(e){ showAlert('co-alert', e.message); }
+}
+
+async function loadCats(){
+  cats = await api('/api/categories');
+  const sel = $('#j-cat'); sel.innerHTML = '<option value="">선택</option>';
+  cats.forEach(c=>{
+    const o = document.createElement('option'); o.value=c.category_id; o.textContent=c.name_ko; sel.appendChild(o);
+  });
+}
+
+async function createJob(){
+  try{
+    const wt = [...$$('#j-wt label.on')].map(l=>l.dataset.v);
+    if(!wt.length){ showAlert('job-alert','근무 형태를 1개 이상 선택해주세요.'); return; }
+    const body = {
+      title: $('#j-title').value.trim(),
+      category_id: parseInt($('#j-cat').value)||null,
+      description: $('#j-desc').value.trim(),
+      qualifications: $('#j-qual').value.trim(),
+      work_types: wt,
+      weekly_hours_min: parseInt($('#j-hmin').value)||null,
+      weekly_hours_max: parseInt($('#j-hmax').value)||null,
+      salary_type: $('#j-stype').value,
+      salary_min: parseInt($('#j-smin').value)||null,
+      salary_max: null,
+      region_sido: $('#j-sido').value||null,
+      is_remote_ok: $('#j-remote').checked,
+      gap_track: $('#j-gap').checked,
+      senior_preferred: $('#j-senior').checked,
+      no_exp_ok: $('#j-noexp').checked,
+    };
+    if(!body.title||!body.category_id||!body.description){ showAlert('job-alert','제목·직군·상세는 필수입니다.'); return; }
+    await api('/api/jobs', {method:'POST', body: JSON.stringify(body)});
+    showAlert('job-alert','등록 신청 완료! 관리자 검토 후 게시됩니다.','ok');
+    ['j-title','j-desc','j-qual','j-hmin','j-hmax','j-smin'].forEach(id=>$('#'+id).value='');
+    $$('#j-wt label').forEach(l=>{l.classList.remove('on'); l.querySelector('input').checked=false;});
+    loadMyJobs();
+  }catch(e){ showAlert('job-alert', e.message); }
+}
+
+async function loadMyJobs(){
+  if(!myCompany) return;
+  try{
+    const all = await api('/api/jobs?status=all');
+    const mine = all.filter(j=>j.company_id===myCompany.company_id);
+    const el = $('#my-jobs-list');
+    if(!mine.length){ el.innerHTML='<div class="empty">등록한 공고가 없습니다.</div>'; return; }
+    el.innerHTML = mine.map(j=>{
+      const sk = {published:'p-grn',pending_review:'p-yel',rejected:'p-red',closed:'p-gry',draft:'p-gry'}[j.status]||'p-gry';
+      const sn = {published:'게시중',pending_review:'검토 대기',rejected:'반려',closed:'마감'}[j.status]||j.status;
+      return `<div class="job-row">
+        <div>
+          <div class="t">${esc(j.title)}</div>
+          <div class="m">등록 ${j.created_at.slice(0,10)} · 조회 ${j.view_count} · 지원 ${j.apply_count}</div>
+        </div>
+        <span class="pill ${sk}">${sn}</span>
+        <button class="btn btn-sm btn-outline" onclick="delJob('${j.job_id}')">삭제</button>
+      </div>`;
+    }).join('');
+  }catch(e){ $('#my-jobs-list').innerHTML=`<div class="empty">${e.message}</div>`; }
+}
+
+async function delJob(id){
+  if(!confirm('이 공고를 삭제하시겠습니까?')) return;
+  await api('/api/jobs/'+id, {method:'DELETE'});
+  loadMyJobs();
+}
+
+function esc(s){return String(s||'').replace(/[<>"']/g,c=>({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+(async function(){
+  await loadCats();
+  await refreshMe();
+})();
+</script>
+</body>
+</html>

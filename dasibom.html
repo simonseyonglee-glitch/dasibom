@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>다시봄 — 중년여성을 위한 커리어 리스타트 플랫폼</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#FF6B6B;
+    --coral-dark:#E85555;
+    --peach:#FFE5D9;
+    --cream:#FFF8F3;
+    --navy:#1F2A44;
+    --gray-1:#F7F7F9;
+    --gray-2:#E9EAEE;
+    --gray-3:#9AA0AE;
+    --gray-4:#5A6172;
+    --green:#2ECC71;
+    --gold:#F4B400;
+    --shadow:0 8px 30px rgba(31,42,68,0.08);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{font-family:'Noto Sans KR',sans-serif;color:var(--navy);background:#fff;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+  img{max-width:100%;}
+
+  /* ===== NAV ===== */
+  .nav{
+    position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--gray-2);
+  }
+  .nav-inner{max-width:1240px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;gap:40px;}
+  .logo{font-weight:900;font-size:22px;letter-spacing:-0.5px;color:var(--navy);display:flex;align-items:center;gap:8px;}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--coral),#FF9A8B);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;}
+  .nav-menu{display:flex;gap:28px;flex:1;}
+  .nav-menu a{font-size:15px;color:var(--gray-4);font-weight:500;padding:8px 0;border-bottom:2px solid transparent;cursor:pointer;transition:.2s;}
+  .nav-menu a.active,.nav-menu a:hover{color:var(--navy);border-color:var(--coral);}
+  .nav-right{display:flex;gap:12px;align-items:center;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:12px;font-weight:600;transition:.2s;padding:11px 20px;font-size:14px;}
+  .btn-primary{background:var(--coral);color:#fff;}
+  .btn-primary:hover{background:var(--coral-dark);transform:translateY(-1px);}
+  .btn-ghost{background:transparent;color:var(--navy);}
+  .btn-ghost:hover{background:var(--gray-1);}
+  .btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--gray-2);}
+  .btn-outline:hover{border-color:var(--navy);}
+  .btn-lg{padding:16px 28px;font-size:16px;border-radius:14px;}
+
+  /* ===== PAGES ===== */
+  .page{display:none;animation:fadeIn .3s ease;}
+  .page.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .container{max-width:1240px;margin:0 auto;padding:0 28px;}
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;overflow:hidden;
+    background:linear-gradient(135deg,var(--cream) 0%, var(--peach) 100%);
+    padding:80px 0 100px;
+  }
+  .hero::before{
+    content:"";position:absolute;top:-100px;right:-100px;width:500px;height:500px;
+    background:radial-gradient(circle,rgba(255,107,107,0.15),transparent 70%);
+    border-radius:50%;
+  }
+  .hero-inner{display:grid;grid-template-columns:1.1fr 1fr;gap:60px;align-items:center;position:relative;z-index:2;}
+  .hero-tag{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:100px;padding:8px 16px;font-size:13px;font-weight:600;color:var(--coral);box-shadow:var(--shadow);margin-bottom:24px;}
+  .hero-tag .dot{width:6px;height:6px;background:var(--coral);border-radius:50%;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  .hero h1{font-size:54px;line-height:1.18;font-weight:900;letter-spacing:-1.5px;margin-bottom:24px;}
+  .hero h1 .accent{color:var(--coral);}
+  .hero h1 .underline{position:relative;display:inline-block;}
+  .hero h1 .underline::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:14px;background:rgba(255,107,107,0.25);z-index:-1;}
+  .hero p.lead{font-size:18px;color:var(--gray-4);margin-bottom:36px;max-width:520px;line-height:1.7;}
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px;}
+  .hero-stats{display:flex;gap:36px;}
+  .hero-stat .v{font-size:28px;font-weight:900;color:var(--navy);}
+  .hero-stat .l{font-size:13px;color:var(--gray-4);margin-top:2px;}
+
+  .hero-visual{position:relative;}
+  .hero-card{background:#fff;border-radius:24px;padding:24px;box-shadow:var(--shadow);}
+  .hero-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .hero-card-title{font-size:14px;font-weight:700;color:var(--gray-4);}
+  .match-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#FFE5E5,#FFF0E5);color:var(--coral);padding:6px 12px;border-radius:100px;font-size:12px;font-weight:700;}
+  .job-row{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--gray-2);}
+  .job-row:last-child{border:none;}
+  .company-logo{width:46px;height:46px;border-radius:12px;background:var(--gray-1);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--navy);font-size:14px;flex-shrink:0;}
+  .lg-1{background:#FFE5D9;color:#E85555;}
+  .lg-2{background:#E0F2E9;color:#2ECC71;}
+  .lg-3{background:#E5EBFF;color:#4A6CF7;}
+  .lg-4{background:#FFF4D6;color:#D4A100;}
+  .job-info{flex:1;min-width:0;}
+  .job-info .co{font-size:12px;color:var(--gray-4);margin-bottom:2px;}
+  .job-info .ti{font-size:14px;font-weight:700;margin-bottom:4px;}
+  .job-info .ta{display:flex;gap:6px;flex-wrap:wrap;}
+  .tag{font-size:11px;background:var(--gray-1);color:var(--gray-4);padding:3px 8px;border-radius:6px;}
+  .tag-coral{background:#FFE5E5;color:var(--coral);}
+  .tag-green{background:#E0F2E9;color:#2ECC71;}
+  .match-pct{font-size:16px;font-weight:900;color:var(--coral);align-self:center;}
+
+  .floating-card{position:absolute;background:#fff;border-radius:16px;padding:14px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;}
+  .floating-card.fc1{top:-30px;left:-30px;animation:float 6s ease-in-out infinite;}
+  .floating-card.fc2{bottom:-20px;right:-20px;animation:float 6s ease-in-out infinite 2s;}
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+  .fc-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+
+  /* ===== SECTION COMMON ===== */
+  section.block{padding:90px 0;}
+  .section-head{text-align:center;max-width:680px;margin:0 auto 60px;}
+  .section-head .kicker{font-size:13px;font-weight:700;color:var(--coral);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
+  .section-head h2{font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1.25;margin-bottom:16px;}
+  .section-head p{font-size:16px;color:var(--gray-4);}
+
+  /* ===== FEATURES ===== */
+  .features{background:#fff;}
+  .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .feature-card{background:var(--cream);border-radius:var(--radius);padding:32px 28px;transition:.3s;border:1.5px solid transparent;}
+  .feature-card:hover{transform:translateY(-4px);border-color:var(--coral);background:#fff;box-shadow:var(--shadow);}
+  .feature-num{font-size:13px;font-weight:900;color:var(--coral);margin-bottom:16px;}
+  .feature-icon{width:56px;height:56px;border-radius:16px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px;box-shadow:0 4px 14px rgba(255,107,107,0.18);}
+  .feature-card h3{font-size:20px;font-weight:800;margin-bottom:12px;}
+  .feature-card p{font-size:14px;color:var(--gray-4);line-height:1.7;}
+  .feature-list{margin-top:18px;}
+  .feature-list li{list-style:none;font-size:13px;color:var(--gray-4);padding:5px 0;display:flex;gap:8px;}
+  .feature-list li::before{content:"✓";color:var(--coral);font-weight:900;}
+
+  /* ===== W-CERT ===== */
+  .wcert{background:linear-gradient(180deg,#fff 0%, var(--cream) 100%);}
+  .wcert-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+  .wcert h2{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.3;margin-bottom:20px;}
+  .wcert .lead{font-size:16px;color:var(--gray-4);margin-bottom:32px;line-height:1.7;}
+  .wcert-criteria{display:grid;gap:16px;}
+  .wcert-item{display:flex;gap:16px;padding:16px;background:#fff;border-radius:14px;box-shadow:var(--shadow);}
+  .wcert-num{width:36px;height:36px;border-radius:10px;background:var(--peach);color:var(--coral);font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .wcert-item .t{font-weight:700;margin-bottom:4px;}
+  .wcert-item .d{font-size:13px;color:var(--gray-4);}
+
+  .wcert-badge{background:#fff;border-radius:24px;padding:40px;box-shadow:var(--shadow);position:relative;text-align:center;overflow:hidden;}
+  .wcert-badge::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(255,107,107,0.08),transparent 70%);}
+  .badge-circle{width:160px;height:160px;margin:0 auto 24px;border-radius:50%;background:linear-gradient(135deg,var(--coral),#FF9A8B);display:flex;align-items:center;justify-content:center;color:#fff;position:relative;box-shadow:0 12px 40px rgba(255,107,107,0.4);}
+  .badge-circle::after{content:"";position:absolute;inset:-12px;border:2px dashed var(--coral);border-radius:50%;opacity:0.3;}
+  .badge-circle .lbl{font-size:11px;letter-spacing:2px;opacity:.85;}
+  .badge-circle .num{font-size:42px;font-weight:900;line-height:1;margin:6px 0;}
+  .badge-circle .sub{font-size:11px;opacity:.85;}
+  .wcert-badge h3{font-size:22px;font-weight:900;margin-bottom:6px;}
+  .wcert-badge p{color:var(--gray-4);font-size:14px;margin-bottom:24px;}
+  .wcert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-top:24px;border-top:1px solid var(--gray-2);}
+  .wcert-stat .v{font-size:22px;font-weight:900;color:var(--coral);}
+  .wcert-stat .l{font-size:11px;color:var(--gray-4);margin-top:2px;}
+
+  /* ===== HOW IT WORKS ===== */
+  .how{background:#fff;}
+  .step-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:relative;}
+  .step{text-align:left;padding:24px;background:var(--gray-1);border-radius:var(--radius);position:relative;}
+  .step-n{display:inline-block;font-size:11px;font-weight:900;color:var(--coral);letter-spacing:2px;margin-bottom:14px;}
+  .step-icon{font-size:32px;margin-bottom:14px;}
+  .step h4{font-size:17px;font-weight:800;margin-bottom:8px;}
+  .step p{font-size:13px;color:var(--gray-4);line-height:1.6;}
+
+  /* ===== TESTIMONIAL ===== */
+  .testi{background:var(--cream);}
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .testi-card{background:#fff;border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);}
+  .stars{color:var(--gold);font-size:14px;margin-bottom:14px;}
+  .testi-card p{font-size:15px;line-height:1.7;color:var(--navy);margin-bottom:20px;}
+  .testi-person{display:flex;gap:12px;align-items:center;padding-top:18px;border-top:1px solid var(--gray-2);}
+  .testi-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:14px;}
+  .av1{background:linear-gradient(135deg,#FF6B6B,#FF9A8B);}
+  .av2{background:linear-gradient(135deg,#4A6CF7,#6CB7FF);}
+  .av3{background:linear-gradient(135deg,#2ECC71,#7FE2A8);}
+  .testi-person .n{font-weight:700;font-size:14px;}
+  .testi-person .r{font-size:12px;color:var(--gray-4);}
+
+  /* ===== CTA ===== */
+  .cta-block{padding:90px 0;background:linear-gradient(135deg,var(--navy) 0%, #2D3A5C 100%);color:#fff;position:relative;overflow:hidden;}
+  .cta-block::before{content:"";position:absolute;top:-200px;right:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(255,107,107,0.18),transparent 70%);border-radius:50%;}
+  .cta-inner{text-align:center;position:relative;z-index:2;}
+  .cta-inner h2{font-size:42px;font-weight:900;letter-spacing:-1px;margin-bottom:18px;line-height:1.2;}
+  .cta-inner p{font-size:17px;opacity:.85;margin-bottom:36px;max-width:540px;margin-left:auto;margin-right:auto;}
+
+  /* ===== FOOTER ===== */
+  footer{padding:60px 0 40px;background:#fff;border-top:1px solid var(--gray-2);}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+  footer .logo{margin-bottom:14px;}
+  footer p{font-size:13px;color:var(--gray-4);line-height:1.7;}
+  .footer-col h5{font-size:14px;font-weight:800;margin-bottom:14px;}
+  .footer-col a{display:block;font-size:13px;color:var(--gray-4);padding:5px 0;cursor:pointer;}
+  .footer-col a:hover{color:var(--coral);}
+  .footer-bottom{padding-top:24px;border-top:1px solid var(--gray-2);font-size:12px;color:var(--gray-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  /* ====================== JOB PAGE ====================== */
+  .job-page{background:var(--gray-1);min-height:100vh;padding:40px 0 80px;}
+  .page-header{margin-bottom:32px;}
+  .page-header h1{font-size:32px;font-weight:900;letter-spacing:-0.8px;margin-bottom:8px;}
+  .page-header p{color:var(--gray-4);font-size:15px;}
+  .job-layout{display:grid;grid-template-columns:280px 1fr;gap:28px;align-items:start;}
+
+  .filter-panel{background:#fff;border-radius:var(--radius);padding:24px;position:sticky;top:90px;}
+  .filter-panel h3{font-size:15px;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
+  .filter-panel h3 small{font-size:12px;color:var(--coral);cursor:pointer;font-weight:600;}
+  .filter-group{padding:14px 0;border-bottom:1px solid var(--gray-2);}
+  .filter-group:last-child{border:none;padding-bottom:0;}
+  .filter-group h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--gray-4);}
+  .filter-check{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer;color:var(--navy);}
+  .filter-check input{accent-color:var(--coral);width:16px;height:16px;}
+  .filter-check .count{margin-left:auto;color:var(--gray-3);font-size:12px;}
+  .filter-pill{display:inline-flex;gap:6px;flex-wrap:wrap;}
+  .filter-pill button{padding:6px 12px;border-radius:8px;background:var(--gray-1);font-size:12px;color:var(--gray-4);font-weight:600;border:1.5px solid transparent;}
+  .filter-pill button.on{background:#FFE5E5;color:var(--coral);border-color:var(--coral);}
+
+  .job-list{display:grid;gap:16px;}
+  .job-bar{background:#fff;border-radius:14px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;font-size:14px;}
+  .job-bar .l{color:var(--gray-4);}
+  .job-bar .l b{color:var(--navy);}
+  .sort-sel{font-size:13px;border:1px solid var(--gray-2);border-radius:8px;padding:6px 10px;font-family:inherit;background:#fff;}
+
+  .job-card{background:#fff;border-radius:var(--radius);padding:24px;transition:.2s;border:1.5px solid transparent;cursor:pointer;}
+  .job-card:hover{border-color:var(--coral);transform:translateY(-2px);box-shadow:var(--shadow);}
+  .job-card-top{display:flex;gap:16px;align-items:flex-start;}
+  .job-card-logo{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;flex-shrink:0;}
+  .job-card-main{flex:1;}
+  .job-card-co{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--gray-4);margin-bottom:4px;}
+  .wcert-mini{display:inline-flex;align-items:center;gap:4px;background:#FFE5E5;color:var(--coral);padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;}
+  .job-card h3.title{font-size:18px;font-weight:800;margin-bottom:10px;}
+  .job-meta{display:flex;gap:14px;font-size:13px;color:var(--gray-4);margin-bottom:14px;flex-wrap:wrap;}
+  .job-meta span{display:flex;align-items:center;gap:4px;}
+  .job-tags{display:flex;gap:6px;flex-wrap:wrap;}
+  .job-card-right{text-align:center;min-width:90px;}
+  .match-circle{width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--coral) 0% var(--p,80%),var(--gray-2) var(--p,80%) 100%);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;position:relative;}
+  .match-circle::after{content:"";position:absolute;inset:6px;background:#fff;border-radius:50%;}
+  .match-circle span{position:relative;z-index:1;font-weight:900;font-size:15px;color:var(--coral);}
+  .match-label{font-size:11px;color:var(--gray-4);font-weight:600;}
+  .job-actions{display:flex;gap:8px;margin-top:14px;}
+  .icon-btn{width:36px;height:36px;border-radius:10px;background:var(--gray-1);display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .icon-btn:hover{background:var(--peach);color:var(--coral);}
+
+  /* ====================== COACHING PAGE ====================== */
+  .coach-page{background:var(--gray-1);min-height:100vh;padding:0 0 80px;}
+  .coach-hero{background:linear-gradient(135deg,var(--cream),#FFF0E5);padding:60px 0;}
+  .coach-hero h1{font-size:38px;font-weight:900;letter-spacing:-0.8px;margin-bottom:14px;}
+  .coach-hero p{color:var(--gray-4);font-size:16px;max-width:540px;}
+
+  .diag-card{background:#fff;border-radius:24px;padding:36px;margin:-40px auto 40px;max-width:1240px;box-shadow:var(--shadow);position:relative;z-index:2;}
+  .diag-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:14px;}
+  .diag-head h2{font-size:24px;font-weight:900;}
+  .diag-head .sub{font-size:14px;color:var(--gray-4);margin-top:4px;}
+  .diag-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .diag-item{background:var(--gray-1);border-radius:14px;padding:20px;}
+  .diag-item .ic{font-size:24px;margin-bottom:10px;}
+  .diag-item .lab{font-size:12px;color:var(--gray-4);margin-bottom:6px;}
+  .diag-item .val{font-size:20px;font-weight:900;color:var(--navy);}
+  .diag-item .val.coral{color:var(--coral);}
+  .diag-bar{margin-top:10px;height:6px;background:var(--gray-2);border-radius:3px;overflow:hidden;}
+  .diag-bar .fill{height:100%;background:linear-gradient(90deg,var(--coral),#FF9A8B);border-radius:3px;}
+
+  .coach-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:28px;margin-top:32px;}
+  .coach-panel{background:#fff;border-radius:var(--radius);padding:28px;}
+  .coach-panel h3{font-size:18px;font-weight:900;margin-bottom:6px;}
+  .coach-panel .sub{font-size:13px;color:var(--gray-4);margin-bottom:20px;}
+
+  .course-card{display:flex;gap:14px;padding:16px;background:var(--gray-1);border-radius:14px;margin-bottom:12px;align-items:center;transition:.2s;cursor:pointer;}
+  .course-card:hover{background:var(--cream);}
+  .course-thumb{width:64px;height:64px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+  .ct-1{background:#FFE5D9;}
+  .ct-2{background:#E5EBFF;}
+  .ct-3{background:#E0F2E9;}
+  .ct-4{background:#FFF4D6;}
+  .course-info{flex:1;}
+  .course-info .nm{font-size:15px;font-weight:800;margin-bottom:4px;}
+  .course-info .mt{font-size:12px;color:var(--gray-4);}
+  .course-info .mt b{color:var(--coral);}
+  .course-card .arrow{font-size:18px;color:var(--gray-3);}
+
+  .mentor-card{background:linear-gradient(135deg,var(--peach),#FFF8F3);border-radius:18px;padding:24px;text-align:center;margin-bottom:16px;}
+  .mentor-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--coral),#FF9A8B);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:24px;margin:0 auto 12px;}
+  .mentor-card .nm{font-size:17px;font-weight:900;margin-bottom:4px;}
+  .mentor-card .ti{font-size:13px;color:var(--gray-4);margin-bottom:14px;}
+  .mentor-tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+
+  /* ====================== MYPAGE ====================== */
+  .my-page{background:var(--gray-1);min-height:100vh;padding:40px 0 80px;}
+  .my-layout{display:grid;grid-template-columns:300px 1fr;gap:28px;align-items:start;}
+  .my-profile{background:#fff;border-radius:var(--radius);padding:28px;text-align:center;position:sticky;top:90px;}
+  .my-avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--coral),#FF9A8B);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:28px;margin:0 auto 14px;}
+  .my-profile h3{font-size:20px;font-weight:900;margin-bottom:4px;}
+  .my-profile .role{font-size:13px;color:var(--gray-4);margin-bottom:20px;}
+  .complete-ring{margin-bottom:18px;}
+  .complete-ring .lbl{font-size:12px;color:var(--gray-4);margin-bottom:8px;}
+  .complete-bar{height:8px;background:var(--gray-2);border-radius:4px;overflow:hidden;margin-bottom:6px;}
+  .complete-bar .fill{height:100%;background:linear-gradient(90deg,var(--coral),#FF9A8B);width:78%;border-radius:4px;}
+  .complete-ring .pct{font-weight:900;color:var(--coral);font-size:14px;}
+  .my-menu{margin-top:24px;text-align:left;}
+  .my-menu a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:14px;color:var(--gray-4);cursor:pointer;}
+  .my-menu a.active,.my-menu a:hover{background:var(--cream);color:var(--coral);font-weight:700;}
+
+  .my-content{display:grid;gap:24px;}
+  .my-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .my-stat-card{background:#fff;border-radius:var(--radius);padding:22px;}
+  .my-stat-card .ic{font-size:22px;margin-bottom:10px;}
+  .my-stat-card .lb{font-size:12px;color:var(--gray-4);margin-bottom:6px;}
+  .my-stat-card .vl{font-size:24px;font-weight:900;}
+  .my-stat-card .vl.coral{color:var(--coral);}
+  .my-card{background:#fff;border-radius:var(--radius);padding:28px;}
+  .my-card h3{font-size:18px;font-weight:900;margin-bottom:4px;}
+  .my-card .sub{font-size:13px;color:var(--gray-4);margin-bottom:20px;}
+  .app-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--gray-2);}
+  .app-row:last-child{border:none;}
+  .app-row .nm{font-weight:700;font-size:14px;margin-bottom:4px;}
+  .app-row .co{font-size:12px;color:var(--gray-4);}
+  .app-status{font-size:12px;font-weight:700;padding:5px 10px;border-radius:6px;}
+  .as-rev{background:#FFF4D6;color:#D4A100;}
+  .as-int{background:#E5EBFF;color:#4A6CF7;}
+  .as-pass{background:#E0F2E9;color:#2ECC71;}
+  .as-rej{background:var(--gray-1);color:var(--gray-4);}
+
+  /* ====================== RESPONSIVE ====================== */
+  @media (max-width:980px){
+    .hero{padding:60px 0 80px;}
+    .hero-inner{grid-template-columns:1fr;gap:40px;}
+    .hero h1{font-size:38px;}
+    .feature-grid,.step-grid,.testi-grid,.my-stats,.diag-grid,.wcert-inner,.coach-grid,.footer-grid{grid-template-columns:1fr;}
+    .nav-menu{display:none;}
+    .job-layout,.my-layout{grid-template-columns:1fr;}
+    .filter-panel,.my-profile{position:static;}
+    .section-head h2,.wcert h2,.cta-inner h2{font-size:28px;}
+    .container{padding:0 20px;}
+  }
+  @media (max-width:600px){
+    .hero-stats{flex-wrap:wrap;gap:20px;}
+    .floating-card{display:none;}
+    .hero h1{font-size:32px;}
+    section.block{padding:60px 0;}
+    .my-stats{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================= NAV ========================= -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="logo" onclick="go('home')" style="cursor:pointer;">
+      <span class="logo-mark">다</span>
+      <span>다시봄</span>
+    </div>
+    <div class="nav-menu">
+      <a class="nav-link active" data-page="home" onclick="go('home')">홈</a>
+      <a class="nav-link" data-page="jobs" onclick="go('jobs')">채용공고</a>
+      <a class="nav-link" data-page="coach" onclick="go('coach')">커리어 코칭</a>
+      <a class="nav-link" data-page="my" onclick="go('my')">마이페이지</a>
+    </div>
+    <div class="nav-right">
+      <button class="btn btn-ghost">로그인</button>
+      <button class="btn btn-primary" onclick="go('coach')">무료 진단받기</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ========================= HOME ========================= -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div>
+        <div class="hero-tag">
+          <span class="dot"></span>
+          <span>2026년 5월 기준 12,847명이 다시 일하고 있어요</span>
+        </div>
+        <h1>
+          쉬었던 그 시간,<br>
+          <span class="underline">강점</span>이 되도록.<br>
+          <span class="accent">다시봄.</span>
+        </h1>
+        <p class="lead">
+          중년여성을 위한 유연근무 중심 채용 플랫폼.<br>
+          AI가 경력단절 기간을 강점으로 재해석하고,<br>
+          여성친화 인증 기업만 큐레이션합니다.
+        </p>
+        <div class="hero-cta">
+          <button class="btn btn-primary btn-lg" onclick="go('coach')">3분 커리어 진단 시작</button>
+          <button class="btn btn-outline btn-lg" onclick="go('jobs')">채용공고 둘러보기 →</button>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="v">12,847</div><div class="l">재취업 회원</div></div>
+          <div class="hero-stat"><div class="v">428</div><div class="l">W-Cert 인증기업</div></div>
+          <div class="hero-stat"><div class="v">73%</div><div class="l">3개월 내 합격률</div></div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-card">
+          <div class="hero-card-header">
+            <div class="hero-card-title">오늘의 AI 추천 공고</div>
+            <div class="match-badge">✨ AI Match</div>
+          </div>
+          <div class="job-row">
+            <div class="company-logo lg-1">현</div>
+            <div class="job-info">
+              <div class="co">현우 에듀 · 강남</div>
+              <div class="ti">초등 방과후 영어 강사 (오전반)</div>
+              <div class="ta"><span class="tag tag-coral">유연근무</span><span class="tag tag-green">W-Cert</span><span class="tag">재택혼합</span></div>
+            </div>
+            <div class="match-pct">94%</div>
+          </div>
+          <div class="job-row">
+            <div class="company-logo lg-2">그</div>
+            <div class="job-info">
+              <div class="co">그린리프 · 판교</div>
+              <div class="ti">사내 행정 어시스턴트 (시간선택제)</div>
+              <div class="ta"><span class="tag tag-coral">주20시간</span><span class="tag tag-green">W-Cert</span><span class="tag">10-15시</span></div>
+            </div>
+            <div class="match-pct">89%</div>
+          </div>
+          <div class="job-row">
+            <div class="company-logo lg-3">노</div>
+            <div class="job-info">
+              <div class="co">노을디자인 · 원격</div>
+              <div class="ti">콘텐츠 에디터 (시니어 우대)</div>
+              <div class="ta"><span class="tag tag-coral">100% 재택</span><span class="tag">자율출퇴근</span></div>
+            </div>
+            <div class="match-pct">87%</div>
+          </div>
+        </div>
+
+        <div class="floating-card fc1">
+          <div class="fc-icon" style="background:#E0F2E9;">📈</div>
+          <div>
+            <div style="font-weight:800;font-size:13px;">합격률 +47%</div>
+            <div style="font-size:11px;color:var(--gray-4);">AI 코칭 후 평균</div>
+          </div>
+        </div>
+        <div class="floating-card fc2">
+          <div class="fc-icon" style="background:#FFE5E5;">🎓</div>
+          <div>
+            <div style="font-weight:800;font-size:13px;">무료 리스킬링</div>
+            <div style="font-size:11px;color:var(--gray-4);">월 240+ 과정</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="block features">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">왜 다시봄인가요</div>
+        <h2>다른 채용 사이트와 무엇이 다른가요?</h2>
+        <p>'경력단절'을 약점이 아닌 '경험의 다양성'으로 해석하는 단 하나의 플랫폼</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-num">01</div>
+          <div class="feature-icon">⏰</div>
+          <h3>유연근무 100% 보장</h3>
+          <p>모든 공고는 시간제·재택·자율출퇴근 중 최소 하나를 보장합니다. 풀타임 9-6에 묶인 공고는 올라오지 않아요.</p>
+          <ul class="feature-list">
+            <li>시간선택제 (주 15~30시간)</li>
+            <li>100% 재택 / 하이브리드</li>
+            <li>학사일정 맞춤 근무</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-num">02</div>
+          <div class="feature-icon">🤖</div>
+          <h3>AI 매칭 + 1:1 코칭</h3>
+          <p>경력단절 기간 동안의 활동(가사, 봉사, 학습)을 분석해 직무 적합도로 환산합니다. 면접 코칭까지 무료.</p>
+          <ul class="feature-list">
+            <li>3분 진단 → 직무 추천</li>
+            <li>이력서 AI 첨삭 (무제한)</li>
+            <li>실제 인사담당자 멘토링</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-num">03</div>
+          <div class="feature-icon">🛡️</div>
+          <h3>W-Cert 여성친화 인증</h3>
+          <p>실제 재직 여성의 익명 평가를 바탕으로 한 자체 인증제. 통과 기업만 채용공고를 올릴 수 있습니다.</p>
+          <ul class="feature-list">
+            <li>육아·돌봄 휴직 실사용률</li>
+            <li>관리직 여성 비율</li>
+            <li>임금 격차 자율 공개</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- W-CERT -->
+  <section class="block wcert">
+    <div class="container wcert-inner">
+      <div>
+        <div class="kicker" style="color:var(--coral);font-weight:700;font-size:13px;letter-spacing:1px;margin-bottom:12px;">W-CERT 인증제</div>
+        <h2>아무 회사나 올리지 못합니다.<br>오직 검증된 기업만.</h2>
+        <p class="lead">기업이 신청만 한다고 인증되지 않습니다. 6가지 정량 기준 + 실제 재직 여성의 익명 평가를 거쳐야 W-Cert 마크를 받습니다. 매년 재심사하며, 기준 미달 시 인증이 회수됩니다.</p>
+        <div class="wcert-criteria">
+          <div class="wcert-item">
+            <div class="wcert-num">1</div>
+            <div><div class="t">유연근무 실사용률 60% 이상</div><div class="d">제도가 있어도 눈치 봐서 못 쓰면 인증 불가</div></div>
+          </div>
+          <div class="wcert-item">
+            <div class="wcert-num">2</div>
+            <div><div class="t">관리직 여성 비율 30% 이상</div><div class="d">여성이 성장할 수 있는 환경인지 확인</div></div>
+          </div>
+          <div class="wcert-item">
+            <div class="wcert-num">3</div>
+            <div><div class="t">경력단절 채용 트랙 운영</div><div class="d">갭이 있어도 공정하게 평가하는 별도 채용</div></div>
+          </div>
+          <div class="wcert-item">
+            <div class="wcert-num">4</div>
+            <div><div class="t">재직자 익명 평가 4.0 이상</div><div class="d">실제로 다니는 사람들의 솔직한 평점</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wcert-badge">
+        <div class="badge-circle">
+          <div>
+            <div class="lbl">DASIBOM</div>
+            <div class="num">W</div>
+            <div class="sub">CERTIFIED</div>
+          </div>
+        </div>
+        <h3>W-Cert 인증 마크</h3>
+        <p>2026년 5월 기준 428개 기업</p>
+        <div class="wcert-grid">
+          <div class="wcert-stat"><div class="v">428</div><div class="l">인증기업</div></div>
+          <div class="wcert-stat"><div class="v">4.5</div><div class="l">평균 평점</div></div>
+          <div class="wcert-stat"><div class="v">68%</div><div class="l">합격 만족도</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="block how">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">이용 방법</div>
+        <h2>4단계면 다시 일터로</h2>
+        <p>회원가입부터 첫 출근까지, 평균 36일</p>
+      </div>
+      <div class="step-grid">
+        <div class="step">
+          <div class="step-n">STEP 01</div>
+          <div class="step-icon">📝</div>
+          <h4>3분 커리어 진단</h4>
+          <p>이전 경력, 단절 기간 동안의 경험, 일하고 싶은 시간대를 입력하면 AI가 적합 직무를 추천합니다.</p>
+        </div>
+        <div class="step">
+          <div class="step-n">STEP 02</div>
+          <div class="step-icon">🎯</div>
+          <h4>맞춤 공고 + 코칭</h4>
+          <p>매일 아침 AI 매칭 공고가 도착. 동시에 부족한 역량은 무료 리스킬링 과정으로 보완합니다.</p>
+        </div>
+        <div class="step">
+          <div class="step-n">STEP 03</div>
+          <div class="step-icon">💬</div>
+          <h4>이력서 첨삭 + 면접</h4>
+          <p>실제 인사담당자 출신 코치가 1:1로 이력서를 손봐주고, 모의면접까지 도와드립니다.</p>
+        </div>
+        <div class="step">
+          <div class="step-n">STEP 04</div>
+          <div class="step-icon">🌱</div>
+          <h4>합격 + 적응 케어</h4>
+          <p>합격 후 3개월간 정기 체크인. 적응이 어렵다면 멘토와 다시 연결해드립니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="block testi">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">먼저 다시 시작한 분들</div>
+        <h2>다시봄을 통해 다시 시작한 이야기</h2>
+      </div>
+      <div class="testi-grid">
+        <div class="testi-card">
+          <div class="stars">★★★★★</div>
+          <p>"7년 전업주부였는데, 사무직으로 돌아갈 자신이 없었어요. 다시봄에서 단절 기간을 '가계 운영 경험'으로 풀어주는 이력서 코칭을 받고 두 달 만에 합격했습니다."</p>
+          <div class="testi-person">
+            <div class="testi-avatar av1">김</div>
+            <div><div class="n">김민정 (47세)</div><div class="r">중견기업 사무직 합격</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="stars">★★★★★</div>
+          <p>"아이 둘 키우면서 풀타임은 불가능했어요. 시간선택제 공고만 모아둔 게 정말 큰 차이였습니다. 오전 9시부터 2시까지, 딱 맞는 자리를 찾았어요."</p>
+          <div class="testi-person">
+            <div class="testi-avatar av2">박</div>
+            <div><div class="n">박서연 (43세)</div><div class="r">교육 스타트업 운영지원</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="stars">★★★★★</div>
+          <p>"50대 진입을 앞두고 디지털 전환이 두려웠는데, 무료 리스킬링 과정으로 SNS 마케팅을 배웠어요. 작은 회사지만 콘텐츠 매니저로 일하고 있습니다."</p>
+          <div class="testi-person">
+            <div class="testi-avatar av3">이</div>
+            <div><div class="n">이정희 (51세)</div><div class="r">로컬 브랜드 콘텐츠 매니저</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-block">
+    <div class="container cta-inner">
+      <h2>"늦었다"는 말, 더 이상 듣지 않으셔도 됩니다.</h2>
+      <p>3분만 투자하면, 나에게 맞는 일자리와 커리어 경로를 받아볼 수 있어요. 가입비·이용료 평생 무료입니다.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-lg" onclick="go('coach')">지금 무료 진단 시작</button>
+        <button class="btn btn-outline btn-lg" style="background:transparent;border-color:rgba(255,255,255,0.3);color:#fff;" onclick="go('jobs')">공고부터 보기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="logo">
+            <span class="logo-mark">다</span>
+            <span>다시봄</span>
+          </div>
+          <p>중년여성을 위한 유연근무 중심 채용 플랫폼.<br>
+          경력단절을 강점으로, 다시 일하는 즐거움으로.</p>
+        </div>
+        <div class="footer-col">
+          <h5>서비스</h5>
+          <a onclick="go('jobs')">채용공고</a>
+          <a onclick="go('coach')">커리어 코칭</a>
+          <a>리스킬링</a>
+          <a>W-Cert 인증</a>
+        </div>
+        <div class="footer-col">
+          <h5>기업</h5>
+          <a>채용 등록</a>
+          <a>W-Cert 신청</a>
+          <a>이용요금</a>
+        </div>
+        <div class="footer-col">
+          <h5>고객지원</h5>
+          <a>도움말</a>
+          <a>1:1 문의</a>
+          <a>커뮤니티</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 Dasibom Inc. All rights reserved.</div>
+        <div>대표 OOO · 사업자등록번호 000-00-00000 · 통신판매업신고 제2026-서울강남-0000호</div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ========================= JOBS ========================= -->
+<div id="page-jobs" class="page">
+  <section class="job-page">
+    <div class="container">
+      <div class="page-header">
+        <h1>오늘의 AI 매칭 공고</h1>
+        <p>김민정님의 프로필 기반 · 매칭률 70% 이상 공고만 표시 중</p>
+      </div>
+
+      <div class="job-layout">
+        <!-- FILTERS -->
+        <aside class="filter-panel">
+          <h3>필터 <small onclick="alert('초기화 (데모)');">초기화</small></h3>
+
+          <div class="filter-group">
+            <h4>근무 형태</h4>
+            <label class="filter-check"><input type="checkbox" checked> 시간선택제 <span class="count">187</span></label>
+            <label class="filter-check"><input type="checkbox" checked> 재택근무 <span class="count">94</span></label>
+            <label class="filter-check"><input type="checkbox"> 자율출퇴근 <span class="count">61</span></label>
+            <label class="filter-check"><input type="checkbox"> 파트타임 <span class="count">142</span></label>
+          </div>
+
+          <div class="filter-group">
+            <h4>직군</h4>
+            <div class="filter-pill" style="gap:6px;">
+              <button class="on">전체</button>
+              <button>사무/행정</button>
+              <button>교육/돌봄</button>
+              <button>디지털</button>
+              <button>서비스</button>
+              <button>전문직</button>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <h4>지역</h4>
+            <label class="filter-check"><input type="checkbox" checked> 서울 <span class="count">312</span></label>
+            <label class="filter-check"><input type="checkbox"> 경기 <span class="count">198</span></label>
+            <label class="filter-check"><input type="checkbox"> 인천 <span class="count">47</span></label>
+            <label class="filter-check"><input type="checkbox"> 원격(전국) <span class="count">94</span></label>
+          </div>
+
+          <div class="filter-group">
+            <h4>특별 조건</h4>
+            <label class="filter-check"><input type="checkbox" checked> ⭐ W-Cert 인증기업만 <span class="count">218</span></label>
+            <label class="filter-check"><input type="checkbox"> 경력단절 채용트랙 <span class="count">89</span></label>
+            <label class="filter-check"><input type="checkbox"> 50세 이상 우대 <span class="count">34</span></label>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;margin-top:18px;">필터 적용</button>
+        </aside>
+
+        <!-- JOB LIST -->
+        <div>
+          <div class="job-bar">
+            <div class="l">전체 <b>428</b>건 · AI 매칭 정렬</div>
+            <select class="sort-sel">
+              <option>매칭률 높은 순</option>
+              <option>최신 등록 순</option>
+              <option>마감 임박 순</option>
+              <option>급여 높은 순</option>
+            </select>
+          </div>
+
+          <div class="job-list">
+            <!-- JOB 1 -->
+            <div class="job-card">
+              <div class="job-card-top">
+                <div class="job-card-logo lg-1">현</div>
+                <div class="job-card-main">
+                  <div class="job-card-co">
+                    <span>현우 에듀</span>
+                    <span>·</span>
+                    <span>서울 강남</span>
+                    <span class="wcert-mini">⭐ W-Cert</span>
+                  </div>
+                  <h3 class="title">초등 방과후 영어 강사 (오전반)</h3>
+                  <div class="job-meta">
+                    <span>📍 강남구</span>
+                    <span>⏰ 주 4일 · 09:00-13:00</span>
+                    <span>💰 시급 25,000원</span>
+                    <span>👶 학교 일정 맞춤</span>
+                  </div>
+                  <div class="job-tags">
+                    <span class="tag tag-coral">시간선택제</span>
+                    <span class="tag tag-green">육아맘 환영</span>
+                    <span class="tag">방학 휴무</span>
+                    <span class="tag">초보강사 OK</span>
+                  </div>
+                </div>
+                <div class="job-card-right">
+                  <div class="match-circle" style="--p:94%;"><span>94%</span></div>
+                  <div class="match-label">AI 매칭</div>
+                  <div class="job-actions">
+                    <button class="icon-btn">♡</button>
+                    <button class="btn btn-primary" style="padding:8px 14px;font-size:13px;">지원</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- JOB 2 -->
+            <div class="job-card">
+              <div class="job-card-top">
+                <div class="job-card-logo lg-2">그</div>
+                <div class="job-card-main">
+                  <div class="job-card-co">
+                    <span>그린리프</span>
+                    <span>·</span>
+                    <span>경기 판교</span>
+                    <span class="wcert-mini">⭐ W-Cert</span>
+                  </div>
+                  <h3 class="title">사내 행정 어시스턴트 (시간선택제)</h3>
+                  <div class="job-meta">
+                    <span>📍 분당구</span>
+                    <span>⏰ 주 20시간 · 10:00-15:00</span>
+                    <span>💰 연봉 2,400만 (시간제 환산)</span>
+                  </div>
+                  <div class="job-tags">
+                    <span class="tag tag-coral">시간선택제</span>
+                    <span class="tag tag-green">4대보험</span>
+                    <span class="tag">경력단절 트랙</span>
+                    <span class="tag">사무직 복귀형</span>
+                  </div>
+                </div>
+                <div class="job-card-right">
+                  <div class="match-circle" style="--p:89%;"><span>89%</span></div>
+                  <div class="match-label">AI 매칭</div>
+                  <div class="job-actions">
+                    <button class="icon-btn">♡</button>
+                    <button class="btn btn-primary" style="padding:8px 14px;font-size:13px;">지원</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- JOB 3 -->
+            <div class="job-card">
+              <div class="job-card-top">
+                <div class="job-card-logo lg-3">노</div>
+                <div class="job-card-main">
+                  <div class="job-card-co">
+                    <span>노을디자인</span>
+                    <span>·</span>
+                    <span>원격</span>
+                    <span class="wcert-mini">⭐ W-Cert</span>
+                  </div>
+                  <h3 class="title">콘텐츠 에디터 (시니어 우대 · 100% 재택)</h3>
+                  <div class="job-meta">
+                    <span>🏠 100% 재택</span>
+                    <span>⏰ 자율출퇴근 (주 30h)</span>
+                    <span>💰 월 280만</span>
+                    <span>👵 50세 이상 우대</span>
+                  </div>
+                  <div class="job-tags">
+                    <span class="tag tag-coral">100% 재택</span>
+                    <span class="tag tag-green">시니어 우대</span>
+                    <span class="tag">자율출퇴근</span>
+                    <span class="tag">디지털 신규</span>
+                  </div>
+                </div>
+                <div class="job-card-right">
+                  <div class="match-circle" style="--p:87%;"><span>87%</span></div>
+                  <div class="match-label">AI 매칭</div>
+                  <div class="job-actions">
+                    <button class="icon-btn">♡</button>
+                    <button class="btn btn-primary" style="padding:8px 14px;font-size:13px;">지원</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- JOB 4 -->
+            <div class="job-card">
+              <div class="job-card-top">
+                <div class="job-card-logo lg-4">맘</div>
+                <div class="job-card-main">
+                  <div class="job-card-co">
+                    <span>맘스데이케어</span>
+                    <span>·</span>
+                    <span>서울 마포</span>
+                    <span class="wcert-mini">⭐ W-Cert</span>
+                  </div>
+                  <h3 class="title">아이돌봄 코디네이터 (사무+현장)</h3>
+                  <div class="job-meta">
+                    <span>📍 마포구</span>
+                    <span>⏰ 주 5일 · 단축근무 가능</span>
+                    <span>💰 월 240만~280만</span>
+                  </div>
+                  <div class="job-tags">
+                    <span class="tag tag-coral">단축근무</span>
+                    <span class="tag tag-green">육아 경험 우대</span>
+                    <span class="tag">교육제공</span>
+                  </div>
+                </div>
+                <div class="job-card-right">
+                  <div class="match-circle" style="--p:82%;"><span>82%</span></div>
+                  <div class="match-label">AI 매칭</div>
+                  <div class="job-actions">
+                    <button class="icon-btn">♡</button>
+                    <button class="btn btn-primary" style="padding:8px 14px;font-size:13px;">지원</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- JOB 5 -->
+            <div class="job-card">
+              <div class="job-card-top">
+                <div class="job-card-logo lg-1">화</div>
+                <div class="job-card-main">
+                  <div class="job-card-co">
+                    <span>화이트박스</span>
+                    <span>·</span>
+                    <span>하이브리드</span>
+                    <span class="wcert-mini">⭐ W-Cert</span>
+                  </div>
+                  <h3 class="title">데이터 입력/검수 매니저 (재택+사무 하이브리드)</h3>
+                  <div class="job-meta">
+                    <span>🏠 주 3일 재택</span>
+                    <span>⏰ 자율출퇴근</span>
+                    <span>💰 월 260만</span>
+                  </div>
+                  <div class="job-tags">
+                    <span class="tag tag-coral">하이브리드</span>
+                    <span class="tag">디지털 신규</span>
+                    <span class="tag">무경력 OK</span>
+                  </div>
+                </div>
+                <div class="job-card-right">
+                  <div class="match-circle" style="--p:78%;"><span>78%</span></div>
+                  <div class="match-label">AI 매칭</div>
+                  <div class="job-actions">
+                    <button class="icon-btn">♡</button>
+                    <button class="btn btn-primary" style="padding:8px 14px;font-size:13px;">지원</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- JOB 6 -->
+            <div class="job-card">
+              <div class="job-card-top">
+                <div class="job-card-logo lg-2">사</div>
+                <div class="job-card-main">
+                  <div class="job-card-co">
+                    <span>사람과미디어</span>
+                    <span>·</span>
+                    <span>서울 종로</span>
+                    <span class="wcert-mini">⭐ W-Cert</span>
+                  </div>
+                  <h3 class="title">SNS 콘텐츠 운영 (시간선택제 · 무경력 OK)</h3>
+                  <div class="job-meta">
+                    <span>📍 종로구</span>
+                    <span>⏰ 주 25시간</span>
+                    <span>💰 시급 18,000원</span>
+                  </div>
+                  <div class="job-tags">
+                    <span class="tag tag-coral">시간선택제</span>
+                    <span class="tag tag-green">교육제공</span>
+                    <span class="tag">디지털 신규</span>
+                  </div>
+                </div>
+                <div class="job-card-right">
+                  <div class="match-circle" style="--p:74%;"><span>74%</span></div>
+                  <div class="match-label">AI 매칭</div>
+                  <div class="job-actions">
+                    <button class="icon-btn">♡</button>
+                    <button class="btn btn-primary" style="padding:8px 14px;font-size:13px;">지원</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div style="text-align:center;margin-top:32px;">
+            <button class="btn btn-outline btn-lg">더 많은 공고 보기 (422건 남음)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ========================= COACHING ========================= -->
+<div id="page-coach" class="page">
+  <section class="coach-page">
+    <div class="coach-hero">
+      <div class="container">
+        <h1>AI 커리어 진단 + 1:1 코칭</h1>
+        <p>경력단절 기간을 강점으로 재해석하고, 부족한 역량은 무료 교육으로 채워드립니다.</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="diag-card">
+        <div class="diag-head">
+          <div>
+            <h2>김민정님의 커리어 진단 결과</h2>
+            <div class="sub">2026.05.10 진단 · 분석된 항목 42개</div>
+          </div>
+          <button class="btn btn-outline">다시 진단하기 →</button>
+        </div>
+        <div class="diag-grid">
+          <div class="diag-item">
+            <div class="ic">💼</div>
+            <div class="lab">이전 경력</div>
+            <div class="val">사무/행정 6년</div>
+            <div class="diag-bar"><div class="fill" style="width:75%;"></div></div>
+          </div>
+          <div class="diag-item">
+            <div class="ic">⏸️</div>
+            <div class="lab">단절 기간</div>
+            <div class="val">7년 2개월</div>
+            <div class="diag-bar"><div class="fill" style="width:60%;"></div></div>
+          </div>
+          <div class="diag-item">
+            <div class="ic">⭐</div>
+            <div class="lab">강점 점수</div>
+            <div class="val coral">87 / 100</div>
+            <div class="diag-bar"><div class="fill" style="width:87%;"></div></div>
+          </div>
+          <div class="diag-item">
+            <div class="ic">🎯</div>
+            <div class="lab">매칭 직무</div>
+            <div class="val">128개 공고</div>
+            <div class="diag-bar"><div class="fill" style="width:92%;"></div></div>
+          </div>
+        </div>
+
+        <div style="margin-top:24px;padding:20px;background:var(--cream);border-radius:14px;display:flex;gap:14px;align-items:flex-start;">
+          <div style="font-size:28px;">💡</div>
+          <div>
+            <div style="font-weight:800;margin-bottom:6px;">AI 커리어 코치의 조언</div>
+            <div style="font-size:14px;color:var(--gray-4);line-height:1.7;">
+              6년의 사무 경력과 7년의 가정 운영 경험은 <b style="color:var(--coral);">'멀티태스킹·정밀 관리 역량'</b>으로 재해석할 수 있어요.
+              디지털 도구(엑셀/구글워크스페이스)만 보강하면 사무직 복귀가 빠를 것으로 보입니다.
+              <b style="color:var(--coral);">추천 코스: '엑셀 + 구글 협업도구 30시간'</b>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="coach-grid">
+        <!-- 추천 교육 -->
+        <div class="coach-panel">
+          <h3>맞춤 리스킬링 추천</h3>
+          <div class="sub">진단 결과 기반 · 모두 무료 (정부 협력)</div>
+
+          <div class="course-card">
+            <div class="course-thumb ct-1">📊</div>
+            <div class="course-info">
+              <div class="nm">엑셀 + 구글워크스페이스 실무 30시간</div>
+              <div class="mt">⏱ 30시간 · 🎓 수료증 발급 · <b>매칭률 +12%</b></div>
+            </div>
+            <div class="arrow">→</div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb ct-2">💻</div>
+            <div class="course-info">
+              <div class="nm">디지털 사무 자동화 입문 (Zapier·노션)</div>
+              <div class="mt">⏱ 20시간 · 🎓 수료증 발급 · <b>매칭률 +9%</b></div>
+            </div>
+            <div class="arrow">→</div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb ct-3">📝</div>
+            <div class="course-info">
+              <div class="nm">경력단절 이후 이력서·자기소개서 작성법</div>
+              <div class="mt">⏱ 8시간 · 🎓 1:1 첨삭 포함 · <b>합격률 +47%</b></div>
+            </div>
+            <div class="arrow">→</div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb ct-4">🎤</div>
+            <div class="course-info">
+              <div class="nm">중년 여성을 위한 면접 스피치 클래스</div>
+              <div class="mt">⏱ 12시간 · 🎓 모의면접 3회 · <b>합격률 +38%</b></div>
+            </div>
+            <div class="arrow">→</div>
+          </div>
+
+          <button class="btn btn-outline" style="width:100%;margin-top:8px;">전체 240+ 과정 보기 →</button>
+        </div>
+
+        <!-- 멘토 매칭 -->
+        <div>
+          <div class="coach-panel" style="margin-bottom:20px;">
+            <h3>추천 1:1 멘토</h3>
+            <div class="sub">동일 직군 + 같은 경험을 가진 분</div>
+
+            <div class="mentor-card">
+              <div class="mentor-avatar">한</div>
+              <div class="nm">한지영 멘토 (49세)</div>
+              <div class="ti">前 LG 사무관리 12년 · 8년 단절 후 복귀</div>
+              <div class="mentor-tags">
+                <span class="tag tag-coral">사무직 복귀</span>
+                <span class="tag tag-green">이력서 첨삭</span>
+              </div>
+              <button class="btn btn-primary" style="width:100%;">멘토링 신청 (무료 1회)</button>
+            </div>
+
+            <div class="mentor-card">
+              <div class="mentor-avatar" style="background:linear-gradient(135deg,#4A6CF7,#6CB7FF);">최</div>
+              <div class="nm">최영주 코치 (52세)</div>
+              <div class="ti">前 신한은행 HR · 現 다시봄 전속코치</div>
+              <div class="mentor-tags">
+                <span class="tag tag-coral">면접 코칭</span>
+                <span class="tag">인사 출신</span>
+              </div>
+              <button class="btn btn-outline" style="width:100%;">프로필 보기 →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ========================= MYPAGE ========================= -->
+<div id="page-my" class="page">
+  <section class="my-page">
+    <div class="container">
+      <div class="my-layout">
+        <!-- PROFILE -->
+        <aside class="my-profile">
+          <div class="my-avatar">김</div>
+          <h3>김민정</h3>
+          <div class="role">사무/행정 · 7년 단절 · 서울 거주</div>
+
+          <div class="complete-ring">
+            <div class="lbl">프로필 완성도</div>
+            <div class="complete-bar"><div class="fill"></div></div>
+            <div class="pct">78% 완성</div>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;">프로필 완성하기</button>
+
+          <div class="my-menu">
+            <a class="active">📊 대시보드</a>
+            <a>💼 지원 현황</a>
+            <a>♡ 관심 공고</a>
+            <a>🎓 학습 현황</a>
+            <a>💬 멘토링 내역</a>
+            <a>⚙️ 설정</a>
+          </div>
+        </aside>
+
+        <!-- CONTENT -->
+        <div class="my-content">
+          <div>
+            <h1 style="font-size:28px;font-weight:900;margin-bottom:6px;">안녕하세요, 김민정님 👋</h1>
+            <p style="color:var(--gray-4);font-size:15px;">오늘도 좋은 하루를 시작해볼까요? 새로운 매칭 공고 3건이 도착했어요.</p>
+          </div>
+
+          <!-- STATS -->
+          <div class="my-stats">
+            <div class="my-stat-card">
+              <div class="ic">💼</div>
+              <div class="lb">지원한 공고</div>
+              <div class="vl">7건</div>
+            </div>
+            <div class="my-stat-card">
+              <div class="ic">♡</div>
+              <div class="lb">관심 공고</div>
+              <div class="vl">14건</div>
+            </div>
+            <div class="my-stat-card">
+              <div class="ic">🎯</div>
+              <div class="lb">AI 매칭 점수</div>
+              <div class="vl coral">87점</div>
+            </div>
+            <div class="my-stat-card">
+              <div class="ic">🎓</div>
+              <div class="lb">수강 중인 과정</div>
+              <div class="vl">2개</div>
+            </div>
+          </div>
+
+          <!-- 지원 현황 -->
+          <div class="my-card">
+            <h3>지원 현황</h3>
+            <div class="sub">최근 30일간의 지원 내역</div>
+
+            <div class="app-row">
+              <div class="company-logo lg-2">그</div>
+              <div>
+                <div class="nm">사내 행정 어시스턴트 (시간선택제)</div>
+                <div class="co">그린리프 · 지원일 2026.05.13</div>
+              </div>
+              <span class="app-status as-int">면접 예정</span>
+              <button class="btn btn-outline" style="padding:8px 14px;font-size:13px;">상세</button>
+            </div>
+
+            <div class="app-row">
+              <div class="company-logo lg-1">현</div>
+              <div>
+                <div class="nm">초등 방과후 영어 강사 (오전반)</div>
+                <div class="co">현우 에듀 · 지원일 2026.05.11</div>
+              </div>
+              <span class="app-status as-rev">서류 검토중</span>
+              <button class="btn btn-outline" style="padding:8px 14px;font-size:13px;">상세</button>
+            </div>
+
+            <div class="app-row">
+              <div class="company-logo lg-3">노</div>
+              <div>
+                <div class="nm">콘텐츠 에디터 (시니어 우대 · 100% 재택)</div>
+                <div class="co">노을디자인 · 지원일 2026.05.08</div>
+              </div>
+              <span class="app-status as-pass">최종 합격 🎉</span>
+              <button class="btn btn-primary" style="padding:8px 14px;font-size:13px;">수락하기</button>
+            </div>
+
+            <div class="app-row">
+              <div class="company-logo lg-4">맘</div>
+              <div>
+                <div class="nm">아이돌봄 코디네이터 (사무+현장)</div>
+                <div class="co">맘스데이케어 · 지원일 2026.05.02</div>
+              </div>
+              <span class="app-status as-rej">불합격</span>
+              <button class="btn btn-outline" style="padding:8px 14px;font-size:13px;">피드백</button>
+            </div>
+          </div>
+
+          <!-- 학습 진도 -->
+          <div class="my-card">
+            <h3>학습 진도</h3>
+            <div class="sub">진행 중인 리스킬링 과정</div>
+
+            <div style="display:grid;gap:16px;">
+              <div style="padding:18px;background:var(--gray-1);border-radius:14px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                  <div>
+                    <div style="font-weight:800;margin-bottom:4px;">📊 엑셀 + 구글워크스페이스 실무 30시간</div>
+                    <div style="font-size:12px;color:var(--gray-4);">18 / 30시간 수료 · 매칭률 +8% 적용 중</div>
+                  </div>
+                  <div style="font-weight:900;color:var(--coral);">60%</div>
+                </div>
+                <div class="complete-bar"><div class="fill" style="width:60%;"></div></div>
+              </div>
+
+              <div style="padding:18px;background:var(--gray-1);border-radius:14px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                  <div>
+                    <div style="font-weight:800;margin-bottom:4px;">📝 경력단절 이후 이력서·자기소개서 작성법</div>
+                    <div style="font-size:12px;color:var(--gray-4);">6 / 8시간 수료 · 1:1 첨삭 1회 예약됨</div>
+                  </div>
+                  <div style="font-weight:900;color:var(--coral);">75%</div>
+                </div>
+                <div class="complete-bar"><div class="fill" style="width:75%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  function go(p){
+    document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+    document.getElementById('page-'+p).classList.add('active');
+    document.querySelectorAll('.nav-link').forEach(el=>el.classList.toggle('active', el.dataset.page===p));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+</script>
+</body>
+</html>
