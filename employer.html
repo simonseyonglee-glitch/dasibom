@@ -58,6 +58,24 @@
   .alert.err{background:#FFE5E5;color:var(--red);display:block;}
   .alert.ok{background:#E0F2E9;color:var(--green);display:block;}
 
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.35);
+           border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .btn[disabled]{opacity:.7;cursor:wait;}
+
+  .success-overlay{position:fixed;inset:0;background:rgba(31,42,68,.55);display:none;align-items:center;justify-content:center;z-index:300;}
+  .success-overlay.show{display:flex;}
+  .success-box{background:#fff;border-radius:22px;padding:44px 56px;text-align:center;
+               box-shadow:0 20px 60px rgba(0,0,0,.3);animation:popIn .35s cubic-bezier(.34,1.56,.64,1);min-width:320px;}
+  @keyframes popIn{0%{opacity:0;transform:scale(.85);}100%{opacity:1;transform:scale(1);}}
+  .success-check{width:78px;height:78px;border-radius:50%;background:linear-gradient(135deg,var(--green),#7FE2A8);
+                 display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px;
+                 animation:checkPop .55s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 24px rgba(46,204,113,.35);}
+  @keyframes checkPop{0%{transform:scale(0) rotate(-45deg);}60%{transform:scale(1.15) rotate(0);}100%{transform:scale(1) rotate(0);}}
+  .success-check svg{width:40px;height:40px;color:#fff;}
+  .success-title{font-size:22px;font-weight:900;margin-bottom:8px;letter-spacing:-0.5px;}
+  .success-sub{font-size:14px;color:var(--gray-4);}
+
   .empty{padding:46px 0;text-align:center;color:var(--gray-3);font-size:13px;}
 
   .co-card{padding:18px;background:var(--cream);border-radius:12px;display:grid;
@@ -102,6 +120,18 @@
   </div>
 </nav>
 
+<div class="success-overlay" id="success-overlay">
+  <div class="success-box">
+    <div class="success-check">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    <div class="success-title" id="success-title">로그인 완료!</div>
+    <div class="success-sub" id="success-sub">환영합니다 🌸</div>
+  </div>
+</div>
+
 <div class="container">
 
   <!-- 비로그인 화면 -->
@@ -113,7 +143,7 @@
         <div id="auth-form-login">
           <div class="form-row"><label>이메일</label><input id="lg-email" type="email" placeholder="company@example.com"></div>
           <div class="form-row"><label>비밀번호</label><input id="lg-pw" type="password"></div>
-          <button class="btn btn-primary" style="width:100%;" onclick="doLogin()">로그인</button>
+          <button class="btn btn-primary" id="lg-btn" style="width:100%;" onclick="doLogin()">로그인</button>
           <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--gray-4);">
             기업 계정이 없으신가요? <a style="color:var(--coral);font-weight:700;" onclick="toggleAuth('signup')">기업 회원가입</a>
           </div>
@@ -122,7 +152,7 @@
           <div class="form-row"><label>담당자 이메일 *</label><input id="su-email" type="email"></div>
           <div class="form-row"><label>비밀번호 * (4자 이상)</label><input id="su-pw" type="password"></div>
           <div class="form-row"><label>담당자 이름 *</label><input id="su-name" type="text"></div>
-          <button class="btn btn-primary" style="width:100%;" onclick="doSignup()">기업 담당자 가입</button>
+          <button class="btn btn-primary" id="su-btn" style="width:100%;" onclick="doSignup()">기업 담당자 가입</button>
           <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--gray-4);">
             이미 계정이 있으신가요? <a style="color:var(--coral);font-weight:700;" onclick="toggleAuth('login')">로그인</a>
           </div>
@@ -345,27 +375,56 @@ function goSection(s){
   }
 }
 
+function setLoading(btnId, isLoading, loadingText){
+  const btn = $('#'+btnId); if(!btn) return;
+  if(isLoading){
+    if(!btn.dataset.original) btn.dataset.original = btn.innerHTML;
+    btn.innerHTML = `<span class="spinner"></span>${loadingText}`;
+    btn.disabled = true;
+  }else{
+    if(btn.dataset.original) btn.innerHTML = btn.dataset.original;
+    btn.disabled = false;
+  }
+}
+function showSuccess(title, sub, duration=1500){
+  return new Promise(resolve=>{
+    $('#success-title').textContent = title;
+    $('#success-sub').textContent = sub;
+    $('#success-overlay').classList.add('show');
+    setTimeout(()=>{ $('#success-overlay').classList.remove('show'); resolve(); }, duration);
+  });
+}
+
 async function doLogin(){
+  setLoading('lg-btn', true, '로그인 중...');
+  $('#auth-alert').className = 'alert';
   try{
     await api('/api/auth/login', {method:'POST', body: JSON.stringify({
       email:$('#lg-email').value.trim(), password:$('#lg-pw').value
     })});
     await refreshMe();
+    const nm = me?.email?.split('@')[0] || '';
+    await showSuccess('로그인 완료!', `${nm}님 환영합니다`);
   }catch(e){ showAlert('auth-alert', e.message); }
+  finally{ setLoading('lg-btn', false); }
 }
 
 async function doSignup(){
+  const body = {
+    email: $('#su-email').value.trim(),
+    password: $('#su-pw').value,
+    name: $('#su-name').value.trim(),
+    role: 'employer'
+  };
+  if(!body.email||!body.password||!body.name){ showAlert('auth-alert','필수 항목을 입력하세요.'); return; }
+  setLoading('su-btn', true, '가입 처리 중...');
+  $('#auth-alert').className = 'alert';
   try{
-    const body = {
-      email: $('#su-email').value.trim(),
-      password: $('#su-pw').value,
-      name: $('#su-name').value.trim(),
-      role: 'employer'
-    };
-    if(!body.email||!body.password||!body.name){ showAlert('auth-alert','필수 항목을 입력하세요.'); return; }
     await api('/api/auth/signup', {method:'POST', body: JSON.stringify(body)});
     await refreshMe();
+    await showSuccess('가입 완료!', `${body.name}님 환영합니다`);
   }catch(e){ showAlert('auth-alert', e.message); }
+  finally{ setLoading('su-btn', false); }
 }
 
 async function doLogout(){
