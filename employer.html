@@ -7,9 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{--coral:#FF6B6B;--coral-dark:#E85555;--peach:#FFE5D9;--cream:#FFF8F3;--navy:#1F2A44;
-        --bg:#F4F5F8;--gray-1:#F7F7F9;--gray-2:#E9EAEE;--gray-3:#9AA0AE;--gray-4:#5A6172;
-        --green:#2ECC71;--gold:#F4B400;--blue:#4A6CF7;--red:#E53935;
-        --shadow:0 4px 18px rgba(31,42,68,0.08);--radius:14px;}
+        --bg:#FAF5EE;--gray-1:#F4EFE7;--gray-2:#E8E0D2;--gray-3:#9AA0AE;--gray-4:#5A6172;
+        --green:#2ECC71;--gold:#B7791F;--blue:#4A6CF7;--red:#E53935;
+        --warn-bg:#FFF7E0;--warn-border:#FCD7A4;--warn-text:#8A5B0A;
+        --shadow:0 4px 18px rgba(83,60,30,0.07);--radius:14px;}
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{font-family:'Noto Sans KR',sans-serif;color:var(--navy);background:var(--bg);font-size:14px;}
   a,button{cursor:pointer;}button{font-family:inherit;border:none;background:none;color:inherit;}
@@ -54,9 +55,18 @@
   .chk-line label{display:inline-flex;gap:6px;align-items:center;cursor:pointer;}
   .chk-line input{accent-color:var(--coral);}
 
-  .alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;}
-  .alert.err{background:#FFE5E5;color:var(--red);display:block;}
-  .alert.ok{background:#E0F2E9;color:var(--green);display:block;}
+  .alert{padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;display:none;
+         align-items:flex-start;gap:10px;border:1px solid transparent;line-height:1.55;}
+  .alert.err{background:#FFEFEF;color:#B83333;border-color:#FFCFCF;display:flex;}
+  .alert.ok{background:#E8F7EF;color:#1E8A4F;border-color:#BBE5CC;display:flex;}
+  .alert.warn{background:var(--warn-bg);color:var(--warn-text);border-color:var(--warn-border);display:flex;}
+  .alert::before{content:'';flex-shrink:0;width:18px;height:18px;border-radius:50%;
+                 background-position:center;background-repeat:no-repeat;background-size:12px;}
+  .alert.err::before{background-color:#FFCFCF;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B83333'%3E%3Cpath d='M11 7h2v6h-2zm0 8h2v2h-2z'/%3E%3C/svg%3E");}
+  .alert.ok::before{background-color:#BBE5CC;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231E8A4F' stroke-width='3'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");}
+  .alert b{font-weight:800;}
 
   .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.35);
            border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px;}
@@ -386,6 +396,14 @@ function setLoading(btnId, isLoading, loadingText){
     btn.disabled = false;
   }
 }
+async function withMinDuration(promise, ms=500){
+  const start = Date.now();
+  try { return await promise; }
+  finally {
+    const elapsed = Date.now() - start;
+    if(elapsed < ms) await new Promise(r => setTimeout(r, ms - elapsed));
+  }
+}
 function showSuccess(title, sub, duration=1500){
   return new Promise(resolve=>{
     $('#success-title').textContent = title;
@@ -396,12 +414,13 @@ function showSuccess(title, sub, duration=1500){
 }
 
 async function doLogin(){
-  setLoading('lg-btn', true, '로그인 중...');
   $('#auth-alert').className = 'alert';
+  $('#auth-alert').textContent = '';
+  setLoading('lg-btn', true, '로그인 중...');
   try{
-    await api('/api/auth/login', {method:'POST', body: JSON.stringify({
+    await withMinDuration(api('/api/auth/login', {method:'POST', body: JSON.stringify({
       email:$('#lg-email').value.trim(), password:$('#lg-pw').value
-    })});
+    })}), 500);
     await refreshMe();
     const nm = me?.email?.split('@')[0] || '';
     await showSuccess('로그인 완료!', `${nm}님 환영합니다`);
@@ -417,10 +436,11 @@ async function doSignup(){
     role: 'employer'
   };
   if(!body.email||!body.password||!body.name){ showAlert('auth-alert','필수 항목을 입력하세요.'); return; }
-  setLoading('su-btn', true, '가입 처리 중...');
   $('#auth-alert').className = 'alert';
+  $('#auth-alert').textContent = '';
+  setLoading('su-btn', true, '가입 처리 중...');
   try{
-    await api('/api/auth/signup', {method:'POST', body: JSON.stringify(body)});
+    await withMinDuration(api('/api/auth/signup', {method:'POST', body: JSON.stringify(body)}), 500);
     await refreshMe();
     await showSuccess('가입 완료!', `${body.name}님 환영합니다`);
   }catch(e){ showAlert('auth-alert', e.message); }

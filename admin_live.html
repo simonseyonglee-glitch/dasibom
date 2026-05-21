@@ -7,9 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{--coral:#FF6B6B;--coral-dark:#E85555;--peach:#FFE5D9;--cream:#FFF8F3;--navy:#1F2A44;
-        --bg:#F4F5F8;--gray-1:#F7F7F9;--gray-2:#E9EAEE;--gray-3:#9AA0AE;--gray-4:#5A6172;
-        --green:#2ECC71;--gold:#F4B400;--blue:#4A6CF7;--red:#E53935;
-        --shadow:0 4px 18px rgba(31,42,68,.06);--radius:14px;}
+        --bg:#FAF5EE;--gray-1:#F4EFE7;--gray-2:#E8E0D2;--gray-3:#9AA0AE;--gray-4:#5A6172;
+        --green:#2ECC71;--gold:#B7791F;--blue:#4A6CF7;--red:#E53935;
+        --warn-bg:#FFF7E0;--warn-border:#FCD7A4;--warn-text:#8A5B0A;
+        --shadow:0 4px 18px rgba(83,60,30,.06);--radius:14px;}
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{font-family:'Noto Sans KR',sans-serif;color:var(--navy);background:var(--bg);font-size:13.5px;}
   a,button{cursor:pointer;}button{font-family:inherit;border:none;background:none;color:inherit;}
@@ -76,9 +77,32 @@
   .form-row{margin-bottom:14px;}
   .form-row label{display:block;font-size:11px;color:var(--gray-4);font-weight:700;margin-bottom:5px;}
   .form-row input{width:100%;padding:10px 12px;border:1px solid var(--gray-2);border-radius:8px;font-size:14px;}
-  .alert{padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:14px;display:none;}
-  .alert.err{background:#FFE5E5;color:var(--red);display:block;}
-  .alert.ok{background:#E0F2E9;color:var(--green);display:block;}
+  .alert{padding:12px 14px;border-radius:10px;font-size:12.5px;margin-bottom:14px;display:none;
+         align-items:flex-start;gap:10px;border:1px solid transparent;line-height:1.55;}
+  .alert.err{background:#FFEFEF;color:#B83333;border-color:#FFCFCF;display:flex;}
+  .alert.ok{background:#E8F7EF;color:#1E8A4F;border-color:#BBE5CC;display:flex;}
+  .alert.warn{background:var(--warn-bg);color:var(--warn-text);border-color:var(--warn-border);display:flex;}
+  .alert::before{content:'';flex-shrink:0;width:18px;height:18px;border-radius:50%;
+                 background-position:center;background-repeat:no-repeat;background-size:12px;}
+  .alert.err::before{background-color:#FFCFCF;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B83333'%3E%3Cpath d='M11 7h2v6h-2zm0 8h2v2h-2z'/%3E%3C/svg%3E");}
+  .alert.warn::before{background-color:var(--warn-border);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238A5B0A'%3E%3Cpath d='M12 2L1 21h22L12 2zm-1 11v3h2v-3zm0 4v2h2v-2z'/%3E%3C/svg%3E");}
+  .alert b{font-weight:800;}
+
+  /* 비밀번호 변경 경고 배너 (관리자 대시보드 상단) */
+  .password-banner{background:linear-gradient(135deg, var(--warn-bg), #FFEEC9);border:1px solid var(--warn-border);
+                    border-left:4px solid #E89B0F;border-radius:12px;padding:14px 18px;margin-bottom:18px;
+                    display:flex;align-items:center;gap:14px;color:var(--warn-text);font-size:13px;line-height:1.55;}
+  .password-banner .pb-icon{flex-shrink:0;width:36px;height:36px;border-radius:50%;
+                            background:#FFE0A5;display:flex;align-items:center;justify-content:center;font-size:18px;}
+  .password-banner .pb-msg{flex:1;}
+  .password-banner .pb-msg b{font-weight:800;color:#7A4F08;}
+  .password-banner button{flex-shrink:0;background:#fff;color:var(--warn-text);border:1px solid var(--warn-border);
+                          padding:7px 14px;border-radius:8px;font-weight:700;font-size:12px;}
+  .password-banner button:hover{background:#FFE7B8;}
+  .password-banner .pb-close{background:transparent;border:none;color:var(--warn-text);font-size:18px;opacity:.6;padding:0 6px;}
+  .password-banner .pb-close:hover{opacity:1;}
 
   .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.35);
            border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px;}
@@ -121,6 +145,9 @@
     <div class="panel">
       <div class="panel-head"><h3>관리자 로그인</h3></div>
       <div style="padding:24px;">
+        <div class="alert warn" style="display:flex;">
+          <div><b>기본 관리자 계정으로 로그인 중</b> — 실서비스 운영 시 즉시 비밀번호를 변경해 주세요.</div>
+        </div>
         <div class="alert" id="lg-alert"></div>
         <div class="form-row"><label>이메일</label><input id="lg-email" type="email" value="admin@dasibom.kr"></div>
         <div class="form-row"><label>비밀번호</label><input id="lg-pw" type="password" value="admin1234"></div>
@@ -156,6 +183,18 @@
         <div><h1>대시보드</h1><div class="sub">실시간 DB 통계</div></div>
         <div class="top-actions"><button class="btn btn-outline" onclick="loadStats()">새로고침</button></div>
       </div>
+
+      <!-- 기본 비밀번호 사용 시에만 표시 -->
+      <div id="password-banner" class="password-banner" style="display:none;">
+        <div class="pb-icon">🔒</div>
+        <div class="pb-msg">
+          <b>기본 관리자 비밀번호를 사용 중입니다.</b><br>
+          서비스 공개 전에 반드시 안전한 비밀번호로 변경해주세요. 외부에 URL이 노출되면 누구나 관리자 권한으로 접근할 수 있습니다.
+        </div>
+        <button onclick="window.open('https://github.com/simonseyonglee-glitch/dasibom/blob/main/DEPLOY.md#5%EB%8B%A8%EA%B3%84--%EB%B0%B0%ED%8F%AC-%ED%9B%84-%EB%B3%B4%EC%95%88-%EA%B0%95%ED%99%94-%EA%BC%AD-%EA%B6%8C%EC%9E%A5','_blank')">변경 방법 보기</button>
+        <button class="pb-close" onclick="this.parentElement.style.display='none';">×</button>
+      </div>
+
       <div class="kpi-grid" id="kpi-area"></div>
       <div class="panel">
         <div class="panel-head"><h3>처리 대기 항목</h3><div class="sub">관리자 액션이 필요한 작업</div></div>
@@ -293,6 +332,14 @@ function setLoading(btnId, isLoading, loadingText){
     btn.disabled = false;
   }
 }
+async function withMinDuration(promise, ms=500){
+  const start = Date.now();
+  try { return await promise; }
+  finally {
+    const elapsed = Date.now() - start;
+    if(elapsed < ms) await new Promise(r => setTimeout(r, ms - elapsed));
+  }
+}
 function showSuccess(title, sub, duration=1500){
   return new Promise(resolve=>{
     $('#success-title').textContent = title;
@@ -303,10 +350,14 @@ function showSuccess(title, sub, duration=1500){
 }
 
 async function doLogin(){
-  setLoading('lg-btn', true, '로그인 중...');
   $('#lg-alert').className = 'alert';
+  $('#lg-alert').textContent = '';
+  setLoading('lg-btn', true, '로그인 중...');
   try{
-    await api('/api/auth/login', {method:'POST', body:JSON.stringify({email:$('#lg-email').value, password:$('#lg-pw').value})});
+    const pw = $('#lg-pw').value;
+    await withMinDuration(api('/api/auth/login', {method:'POST', body:JSON.stringify({email:$('#lg-email').value, password:pw})}), 500);
+    // 기본 비밀번호 사용 여부 기억
+    window._isDefaultPw = (pw === 'admin1234');
     await refreshMe();
     if(!me){
       $('#lg-alert').className='alert err';
@@ -325,6 +376,9 @@ async function doLogout(){ await api('/api/auth/logout',{method:'POST'}); await 
 
 // ===== DASHBOARD =====
 async function loadStats(){
+  // 기본 비밀번호 사용 시 경고 배너
+  const banner = $('#password-banner');
+  if(banner) banner.style.display = window._isDefaultPw ? 'flex' : 'none';
   const s = await api('/api/admin/stats');
   $('#kpi-area').innerHTML = `
     <div class="kpi"><div class="l">구직자</div><div class="v c">${s.jobseekers.toLocaleString()}</div><div class="s">누적 가입자</div></div>
