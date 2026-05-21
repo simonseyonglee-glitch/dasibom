@@ -991,9 +991,11 @@ def admin_report_status(rid: int, req: StatusReq, user=Depends(require_role("adm
 # /로 접근 시 app.html. 다른 정적 파일은 직접 경로로 접근.
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
+_STATIC_EXT = (".html", ".css", ".js", ".svg", ".ico", ".png", ".webmanifest", ".txt")
+
 @app.get("/{filename}")
 def serve_html(filename: str):
-    if not (filename.endswith(".html") or filename.endswith(".css") or filename.endswith(".js")):
+    if not filename.lower().endswith(_STATIC_EXT):
         raise HTTPException(404)
     fp = STATIC_DIR / filename
     if not fp.exists():
