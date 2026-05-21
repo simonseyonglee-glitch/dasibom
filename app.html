@@ -566,16 +566,62 @@ function gapReframe(gapMonths){
   return '오랜 시간 쌓아온 인생 경험은 <b>깊이 있는 판단력</b>이라는 큰 자산입니다.';
 }
 
-// 인사 헤드라인 (이름·시간·연령)
+// 만 나이 계산 (생일 미상 → 보수적으로 -1)
+function calcAge(birthYear){
+  if(!birthYear) return 0;
+  return new Date().getFullYear() - birthYear - 1;
+}
+
+// 인사 헤드라인 — '{나이}세 {이름}님,' 포맷
 function headline(profile){
-  const name = (profile?.name || '').replace(/(.+)/, m=>m); // 이름 그대로
+  const name = profile?.name || '';
   const firstName = name.length>=2 ? name.slice(1) : name; // 성 빼고
-  const year = profile?.birth_year || 0;
-  const age = year ? (new Date().getFullYear() - year + 1) : 0;
-  if(age>=50)  return `${firstName}님,<br>지금이 <span class="ac">가장 빛나는 시기</span>예요.`;
-  if(age>=40)  return `${firstName}님,<br>다시 시작하실 <span class="ac">완벽한 시점</span>입니다.`;
-  if(age>=30)  return `${firstName}님,<br>오늘 <span class="ac">새로운 길</span>을 열어드릴게요.`;
+  const age = calcAge(profile?.birth_year);
+  const ageStr = age>0 ? `${age}세 ` : '';
+  if(age>=50)  return `${ageStr}${firstName}님,<br>지금이 <span class="ac">가장 빛나는 시기</span>예요.`;
+  if(age>=40)  return `${ageStr}${firstName}님,<br>다시 시작하실 <span class="ac">완벽한 시점</span>입니다.`;
+  if(age>=30)  return `${ageStr}${firstName}님,<br>오늘 <span class="ac">새로운 길</span>을 열어드릴게요.`;
+  if(age>=20)  return `${ageStr}${firstName}님,<br>오늘 <span class="ac">새로운 길</span>을 열어드릴게요.`;
   return `${firstName}님,<br>오늘 <span class="ac">좋은 기회</span>가 기다리고 있어요.`;
+}
+
+// AI 직무 추천 — 매칭률 80%+ 공고를 분석해서 최적 직군·근무형태 + 구체 공고 추천
+function recommendJob(jobs, profile){
+  const top = jobs.filter(j => (j.match_score||0) >= 80);
+  if(top.length === 0) return '';
+
+  // 카테고리별 매칭 카운트
+  const catCnt = {};
+  top.forEach(j => { catCnt[j.category_id] = (catCnt[j.category_id]||0) + 1; });
+  const topCatId = Object.entries(catCnt).sort((a,b)=>b[1]-a[1])[0][0];
+
+  // 카테고리별 추천 멘트
+  const catPhrase = {
+    1: '<b>사무직 복귀형</b> 자리가 가장 빠른 길입니다',
+    2: '<b>교육·돌봄 분야</b>가 강점을 가장 잘 살릴 수 있어요',
+    3: '<b>디지털 신규 직무</b>가 매칭률이 가장 높아요',
+    4: '<b>서비스 분야</b>가 안정적인 재시작에 좋아요',
+    5: '<b>전문직 자리</b>가 경력을 살리기에 좋아요',
+    6: '<b>크리에이티브 직무</b>가 다양한 가능성을 보여줘요',
+    7: '<b>의료·건강 분야</b>가 시니어 강점을 살리기 좋아요',
+  }[topCatId] || '<b>매칭된 직무</b>를 살펴보세요';
+
+  // 희망 근무형태 분석
+  const wt = profile?.desired_work_types || [];
+  let workPref = '';
+  if(wt.includes('remote'))         workPref = ' 100% 재택';
+  else if(wt.includes('hybrid'))    workPref = ' 하이브리드';
+  else if(wt.includes('part_time')) workPref = ' 시간선택제';
+  else if(wt.includes('flex'))      workPref = ' 자율출퇴근';
+
+  // 베스트 매칭 공고 1건 (해당 카테고리 내 최고점)
+  const bestInCat = top.filter(j => String(j.category_id)===topCatId)
+                       .sort((a,b)=>(b.match_score||0)-(a.match_score||0))[0];
+  const bestPhrase = bestInCat
+    ? ` 특히 <b>${esc(bestInCat.company_name)}</b>의 <b>${esc(bestInCat.title)}</b>가 <b>${bestInCat.match_score}% 매칭</b>으로 베스트예요.`
+    : '';
+
+  return ` 💡 분석 결과,${workPref ? ' '+workPref : ''} ${catPhrase}.${bestPhrase}`;
 }
 
 // 매칭 인사이트 + 통계
@@ -599,18 +645,18 @@ async function buildInsight(){
   try { apps = await api('/api/applications/me'); } catch{}
   const pending = apps.filter(a => ['submitted','screening','document_passed','interview_scheduled'].includes(a.status));
 
-  // 인사이트 보강
+  // 인사이트 보강 (행동 유도)
   let extra = '';
   if((p.profile_complete_pct||0) < 70){
     extra = ` 프로필을 <b>${100 - (p.profile_complete_pct||0)}%</b>만 더 완성하면 매칭 정확도가 크게 올라가요.`;
   }else if(apps.length === 0){
-    extra = ` <b>매칭률 90% 이상 공고 ${high.length}건</b>이 기다리고 있어요. 마음에 드시는 자리에 지원해 보세요.`;
+    extra = ` <b>매칭률 90% 이상 공고 ${high.length}건</b>이 기다리고 있어요.`;
   }else if(pending.length > 0){
-    extra = ` 지원하신 <b>${pending.length}건</b>의 결과를 기다리는 중이에요. 새 공고도 함께 살펴보시겠어요?`;
-  }else{
-    extra = ` 새로 매칭된 공고를 보러 가실까요?`;
+    extra = ` 지원하신 <b>${pending.length}건</b>의 결과를 기다리는 중이에요.`;
   }
-  $('#hero-insight').innerHTML += extra;
+  // AI 직무 추천 문구 (별도 줄)
+  const recommendation = recommendJob(jobs, p);
+  $('#hero-insight').innerHTML += extra + (recommendation ? `<br><br>${recommendation}` : '');
 
   // 통계 카드
   $('#hero-stats').innerHTML = `
