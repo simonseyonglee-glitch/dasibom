@@ -51,6 +51,43 @@
              gap:14px;font-size:12px;color:var(--gray-4);box-shadow:var(--shadow);}
   .hero-note b{color:var(--coral);}
 
+  /* hero - 로그인 후 개인화 */
+  .hero-user{padding:50px 0;}
+  .hero-user .container{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center;}
+  .ai-greeting{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:100px;
+               padding:7px 14px 7px 10px;font-size:12px;font-weight:700;color:var(--coral);
+               box-shadow:var(--shadow);margin-bottom:18px;}
+  .ai-greeting .ai-dot{width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--coral),#FF9A8B);
+                       color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10px;}
+  .hero-user h1{font-size:34px;font-weight:900;letter-spacing:-1px;margin-bottom:14px;line-height:1.3;}
+  .hero-user h1 .ac{color:var(--coral);}
+  .hero-user .insight{font-size:15px;color:var(--gray-4);margin-bottom:20px;line-height:1.7;
+                      padding-left:16px;border-left:3px solid var(--coral);}
+  .hero-user .insight b{color:var(--coral);}
+  .hero-stat-row{display:flex;gap:14px;margin-bottom:22px;flex-wrap:wrap;}
+  .hero-stat{background:rgba(255,255,255,.7);border-radius:12px;padding:12px 18px;backdrop-filter:blur(8px);}
+  .hero-stat .v{font-size:22px;font-weight:900;color:var(--navy);line-height:1;}
+  .hero-stat .v.coral{color:var(--coral);}
+  .hero-stat .l{font-size:11px;color:var(--gray-4);margin-top:4px;font-weight:600;}
+  .hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
+  .hero-side{background:#fff;border-radius:18px;padding:22px;box-shadow:var(--shadow);}
+  .hero-side h4{font-size:13px;font-weight:800;color:var(--gray-4);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+  .hero-side h4 .pulse{width:6px;height:6px;background:var(--coral);border-radius:50%;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .quick-job{padding:10px 0;border-bottom:1px solid var(--gray-2);display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .quick-job:last-child{border:none;}
+  .quick-job:hover{padding-left:6px;transition:.2s;}
+  .quick-job .qj-logo{width:34px;height:34px;border-radius:9px;background:var(--peach);color:var(--coral);
+                      display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0;}
+  .quick-job .qj-info{flex:1;min-width:0;}
+  .quick-job .qj-info .t{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .quick-job .qj-info .m{font-size:11px;color:var(--gray-4);}
+  .quick-job .qj-match{font-size:13px;font-weight:900;color:var(--coral);}
+  @media(max-width:880px){
+    .hero-user .container{grid-template-columns:1fr;}
+    .hero-user h1{font-size:26px;}
+  }
+
   /* filter */
   .toolbar{display:flex;gap:10px;align-items:center;background:#fff;padding:14px 18px;
            border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:20px;flex-wrap:wrap;}
@@ -177,7 +214,9 @@
 
 <!-- =================== JOBS =================== -->
 <div id="page-jobs" class="page active">
-  <section class="hero">
+
+  <!-- HERO: 비로그인 -->
+  <section class="hero" id="hero-guest">
     <div class="container">
       <h1>쉬었던 그 시간,<br><span class="ac">강점</span>이 되도록.</h1>
       <p>유연근무 100% 보장 · AI 매칭 · W-Cert 인증 기업만 큐레이션.</p>
@@ -185,8 +224,33 @@
         <button class="btn btn-primary btn-lg" onclick="openSignup()">3분 무료 가입</button>
         <button class="btn btn-outline btn-lg" onclick="openLogin()">로그인</button>
       </div>
-      <div class="hero-note" id="hero-demo">
+      <div class="hero-note">
         🔑 <span>데모 계정 — 구직자: <b>demo@dasibom.kr / demo1234</b> · 관리자: <b>admin@dasibom.kr / admin1234</b></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- HERO: 로그인 후 (AI 개인화) -->
+  <section class="hero hero-user" id="hero-user" style="display:none;">
+    <div class="container">
+      <div>
+        <div class="ai-greeting">
+          <span class="ai-dot">✦</span>
+          <span id="hero-greeting-time">좋은 아침이에요</span>
+          <span style="color:var(--gray-3);">·</span>
+          <span style="color:var(--gray-4);">AI 커리어 코치</span>
+        </div>
+        <h1 id="hero-headline"></h1>
+        <div class="insight" id="hero-insight"></div>
+        <div class="hero-stat-row" id="hero-stats"></div>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" onclick="scrollToJobs()">매칭 공고 보기 ↓</button>
+          <button class="btn btn-outline btn-lg" onclick="go('my')">마이페이지</button>
+        </div>
+      </div>
+      <div class="hero-side">
+        <h4><span class="pulse"></span>오늘의 추천 공고 TOP 3</h4>
+        <div id="hero-top-jobs"></div>
       </div>
     </div>
   </section>
@@ -464,6 +528,110 @@ function renderAuth(){
       <button class="btn btn-outline btn-sm" onclick="doLogout()">로그아웃</button>
     `;
   }
+  renderHero();
+}
+
+// ====== AI 개인화 Hero ======
+function renderHero(){
+  const guest = $('#hero-guest'), user = $('#hero-user');
+  if(!me || me.role!=='jobseeker'){
+    guest.style.display='block'; user.style.display='none';
+    return;
+  }
+  guest.style.display='none'; user.style.display='block';
+}
+
+function scrollToJobs(){
+  const t = document.querySelector('.toolbar');
+  if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// 시간대 인사
+function timeGreeting(){
+  const h = new Date().getHours();
+  if(h<5)  return ['늦은 시간까지 수고하세요', '🌙'];
+  if(h<12) return ['좋은 아침이에요', '☀️'];
+  if(h<14) return ['즐거운 점심시간이에요', '🍱'];
+  if(h<18) return ['활기찬 오후예요', '☕'];
+  if(h<22) return ['오늘도 수고 많으셨어요', '🌇'];
+  return    ['편안한 밤이에요', '🌙'];
+}
+
+// 단절기간별 강점 재해석 (AI 코칭 스타일)
+function gapReframe(gapMonths){
+  if(gapMonths===0) return '재직 중이시군요. 더 나은 환경으로의 이동을 함께 찾아드릴게요.';
+  if(gapMonths<=12) return '최근 잠깐의 휴식기는 <b>리프레시 자산</b>입니다. 빠르게 다시 시작하실 수 있어요.';
+  if(gapMonths<=36) return '차분히 다음을 준비하신 시간이 <b>전략적 사고력</b>으로 환산됩니다.';
+  if(gapMonths<=84) return '가정 운영·돌봄 경험은 <b>멀티태스킹·정밀 관리 역량</b>으로 환산할 수 있어요.';
+  return '오랜 시간 쌓아온 인생 경험은 <b>깊이 있는 판단력</b>이라는 큰 자산입니다.';
+}
+
+// 인사 헤드라인 (이름·시간·연령)
+function headline(profile){
+  const name = (profile?.name || '').replace(/(.+)/, m=>m); // 이름 그대로
+  const firstName = name.length>=2 ? name.slice(1) : name; // 성 빼고
+  const year = profile?.birth_year || 0;
+  const age = year ? (new Date().getFullYear() - year + 1) : 0;
+  if(age>=50)  return `${firstName}님,<br>지금이 <span class="ac">가장 빛나는 시기</span>예요.`;
+  if(age>=40)  return `${firstName}님,<br>다시 시작하실 <span class="ac">완벽한 시점</span>입니다.`;
+  if(age>=30)  return `${firstName}님,<br>오늘 <span class="ac">새로운 길</span>을 열어드릴게요.`;
+  return `${firstName}님,<br>오늘 <span class="ac">좋은 기회</span>가 기다리고 있어요.`;
+}
+
+// 매칭 인사이트 + 통계
+async function buildInsight(){
+  if(!me || me.role!=='jobseeker') return;
+  const p = me.profile || {};
+  const [tg, emoji] = timeGreeting();
+  $('#hero-greeting-time').textContent = `${tg} ${emoji}`;
+  $('#hero-headline').innerHTML = headline(p);
+  $('#hero-insight').innerHTML = gapReframe(p.career_gap_months || 0);
+
+  // 공고 매칭 분석
+  let jobs = [];
+  try { jobs = await api('/api/jobs'); } catch{}
+  const matched = jobs.filter(j => (j.match_score||0) >= 80);
+  const high = jobs.filter(j => (j.match_score||0) >= 90);
+  const remote = jobs.filter(j => j.is_remote_ok);
+
+  // 지원 내역
+  let apps = [];
+  try { apps = await api('/api/applications/me'); } catch{}
+  const pending = apps.filter(a => ['submitted','screening','document_passed','interview_scheduled'].includes(a.status));
+
+  // 인사이트 보강
+  let extra = '';
+  if((p.profile_complete_pct||0) < 70){
+    extra = ` 프로필을 <b>${100 - (p.profile_complete_pct||0)}%</b>만 더 완성하면 매칭 정확도가 크게 올라가요.`;
+  }else if(apps.length === 0){
+    extra = ` <b>매칭률 90% 이상 공고 ${high.length}건</b>이 기다리고 있어요. 마음에 드시는 자리에 지원해 보세요.`;
+  }else if(pending.length > 0){
+    extra = ` 지원하신 <b>${pending.length}건</b>의 결과를 기다리는 중이에요. 새 공고도 함께 살펴보시겠어요?`;
+  }else{
+    extra = ` 새로 매칭된 공고를 보러 가실까요?`;
+  }
+  $('#hero-insight').innerHTML += extra;
+
+  // 통계 카드
+  $('#hero-stats').innerHTML = `
+    <div class="hero-stat"><div class="v coral">${high.length}</div><div class="l">매칭률 90%+ 공고</div></div>
+    <div class="hero-stat"><div class="v">${matched.length}</div><div class="l">매칭률 80%+ 공고</div></div>
+    <div class="hero-stat"><div class="v">${remote.length}</div><div class="l">100% 재택 공고</div></div>
+    <div class="hero-stat"><div class="v">${apps.length}</div><div class="l">내 지원 현황</div></div>
+  `;
+
+  // TOP 3 추천
+  const top = [...jobs].sort((a,b)=>(b.match_score||0)-(a.match_score||0)).slice(0,3);
+  $('#hero-top-jobs').innerHTML = top.map(j=>`
+    <div class="quick-job" onclick="openApply('${j.job_id}','${esc(j.title)}','${esc(j.company_name)}')">
+      <div class="qj-logo">${j.logo_initial||j.company_name[0]}</div>
+      <div class="qj-info">
+        <div class="t">${esc(j.title)}</div>
+        <div class="m">${esc(j.company_name)} · ${j.region_sido||'원격'}</div>
+      </div>
+      <div class="qj-match">${j.match_score||0}%</div>
+    </div>
+  `).join('') || '<div style="font-size:12px;color:var(--gray-3);text-align:center;padding:20px 0;">추천 공고를 불러오는 중...</div>';
 }
 function roleKo(r){return {jobseeker:'구직자',employer:'기업',admin:'관리자',mentor:'멘토'}[r]||r;}
 
@@ -481,6 +649,8 @@ async function loadJobs(){
   if($('#cat').value) params.set('category_id', $('#cat').value);
   if($('#f-remote').checked) params.set('only_remote', 'true');
   if($('#f-gap').checked) params.set('gap_only', 'true');
+  // 로그인 상태면 Hero 인사이트도 함께 갱신
+  if(me && me.role==='jobseeker') buildInsight();
   try{
     const list = await api('/api/jobs?'+params.toString());
     const el = $('#job-list');
