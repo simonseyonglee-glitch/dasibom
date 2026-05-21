@@ -451,6 +451,17 @@ def init_db():
                 "VALUES(?,?,?,?,?,?,?,?,?)",
                 (user_id, "김민정", 1979, "서울", "강남구", 86, json.dumps(["part_time","flex","remote"]), 25, 78),
             )
+            # marge — 추가 테스트 계정
+            marge_id = uuid.uuid4().hex
+            conn.execute(
+                "INSERT INTO users(user_id,email,password_hash,role) VALUES(?,?,?,?)",
+                (marge_id, "marge@dasibom.kr", hash_pw("marge1234"), "jobseeker"),
+            )
+            conn.execute(
+                "INSERT INTO user_profiles(user_id,name,birth_year,region_sido,region_sigungu,career_gap_months,desired_work_types,desired_weekly_hours,profile_complete_pct) "
+                "VALUES(?,?,?,?,?,?,?,?,?)",
+                (marge_id, "김마지", 1997, "경기", "용인시 수지구", 12, json.dumps(["flex","remote","hybrid"]), 30, 66),
+            )
             # companies + owner accounts
             co_id_by_name: dict[str, str] = {}
             for c in SEED_COMPANIES:
